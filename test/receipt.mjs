@@ -1,0 +1,58 @@
+// receipt.mjs —— 「结构化声明 + 证据回执」的离线测试（不联网、不调模型）。
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { buildReceipt, verifyReceipt, judgeDeclaredClaims, extractClaimsBlock } from '../lib/receipt.js';
+
+let pass = 0;
+let fail = 0;
+const check = (name, cond, extra = '') => {
+  if (cond) { pass += 1; console.log(`PASS  ${name}`); }
+  else { fail += 1; console.log(`FAIL  ${name}  ${extra}`); }
+};
+
+const mk = (name, args, { isError = false, resultSeen = true, text = 'ok', callId = 'c1', turn = 1 } = {}) => ({
+  name, callId, turn, args, isError, resultSeen, text,
+});
+
+// 1. 写文件：成功 / 失败 / 无证据
+const pairs = [
+  mk('write', { file_path: 'C:\\Users\\x\\a.txt', content: '1' }, { callId: 'w1' }),
+  mk('write', { file_path: 'C:\\Users\\x\\b.txt', content: '1' }, { callId: 'w2', isError: true, text: 'EACCES' }),
+];
+const r1 = judgeDeclaredClaims([
+  { kind: 'write', target: 'C:/Users/x/a.txt' },
+  { kind: 'write', target: 'C:\\Users\\x\\b.txt' },
+  { kind: 'write', target: 'C:\\Users\\x\\missing.txt' },
+], pairs);
+check('成功的写入 → supported', r1[0]?.verdict === 'supported');
+check('失败的写入 → contradicted', r1[1]?.verdict === 'contradicted', JSON.stringify(r1[1]));
+check('没调用过 → insufficient', r1[2]?.verdict === 'insufficient');
+
+// 2. 命令：成功 / 失败
+const r2 = judgeDeclaredClaims([
+  { kind: 'cmd', target: 'npm test' },
+], [mk('pwsh', { command: 'npm test' }, { isError: true, text: 'exit 1' })]);
+check('命令失败 → contradicted', r2[0]?.verdict === 'contradicted');
+
+// 3. 回执：摘要稳定 + 签名可验 + 篡改可发现
+const keyPath = path.join(os.tmpdir(), 'cv-receipt-test-' + Date.now() + '.key');
+const args = { sessionId: 's1', claims: [{ kind: 'write', target: 'C:\\Users\\x\\a.txt' }], pairs, at: '2026-11-05T00:00:00.000Z', keyPath };
+const a = buildReceipt(args);
+const b = buildReceipt(args);
+check('同输入 → 同摘要', a.digest === b.digest);
+check('签名存在', typeof a.sig === 'string' && a.sig.length === 64);
+check('验签通过', verifyReceipt(a, { keyPath }).ok === true);
+const tampered = JSON.parse(JSON.stringify(a));
+tampered.claims[0].verdict = 'contradicted';
+const v = verifyReceipt(tampered, { keyPath });
+check('篡改 verdict → 验签失败', v.ok === false, JSON.stringify(v));
+
+// 4. 声明块解析
+const block = '做完如下：\n```claims\n[{"kind":"cmd","target":"npm test"}]\n```\n以上。';
+check('能从 ```claims 块解析声明', Array.isArray(extractClaimsBlock(block)) && extractClaimsBlock(block).length === 1);
+check('没有声明块 → null', extractClaimsBlock('纯文本，没有代码块') === null);
+
+try { fs.unlinkSync(keyPath); } catch { /* 清理失败无所谓 */ }
+console.log(`\n${pass}/${pass + fail} 通过`);
+process.exit(fail === 0 ? 0 : 1);
