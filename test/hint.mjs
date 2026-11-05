@@ -41,6 +41,10 @@ const batch = buildFeedback([
 ], 'soft');
 check('批量包含两条复核', (batch.match(/你可以自己复核/g) || []).length === 2);
 
+// 账本提示（外部世界模型）
+const fbl = feedbackForResult({ verdict: 'contradicted', target: 'a', reason: 'r', ledgerNote: '10 分钟前成立，现在不成立' }, 'soft');
+check('反馈带账本提示', fbl.includes('10 分钟前成立'));
+
 // supported 不产生反馈
 check('supported 无反馈', feedbackForResult({ verdict: 'supported', target: 'x' }, 'firm') === null);
 
