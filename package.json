@@ -1,0 +1,71 @@
+{
+  "name": "claim-verify-wsc",
+  "version": "0.5.0-experimental.1",
+  "description": "输出前核验可核验断言（端口/路径/进程/文件属性/服务/注册表/计划任务/依赖版本/内存磁盘/模型/金额/时间/算式）：真值全部来自本机系统调用，对不上就追加【核验】说明。默认 observe 只记日志。",
+  "type": "module",
+  "license": "MIT",
+  "author": "wsc",
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/wsc-ai/claim-verify-wsc.git"
+  },
+  "homepage": "https://gitee.com/wsc-ai/claim-verify-wsc",
+  "bugs": {
+    "url": "https://gitee.com/wsc-ai/claim-verify-wsc/issues"
+  },
+  "main": "lib/index.js",
+  "bin": {
+    "claim-verify": "bin/claim-verify.mjs"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "bin",
+    "test",
+    "cordis.patch.yml",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/dry.mjs && node test/policy.mjs && node test/hook.mjs && node test/cascade.mjs && node test/trace.mjs && node test/claim-reader.mjs && node test/sentence-audit.mjs && node test/llm-transport.mjs && node test/promise.mjs && node test/vote.mjs && node test/guards.mjs && node test/structural-audit.mjs && node test/receipt.mjs && node test/receipt-hook.mjs && node test/report-tool.mjs && node test/receipts-view.mjs && node test/envelope.mjs && node test/rfc3161.mjs && node test/cases.mjs && node test/dsl.mjs && node test/claim-dsl.mjs && node test/dsl-policy.mjs && node test/dsl-write.mjs && node test/policy-build.mjs && node test/policy-predicate.mjs && node test/temporal.mjs && node test/witness.mjs && node test/coverage.mjs && node test/autolabel.mjs && node test/offline-claims.mjs && node test/isolated-audit.mjs && node test/metamorphic.mjs && node test/mutation.mjs && node test/property.mjs && node test/platform.mjs && node test/spec-proc.mjs && node test/feedback.mjs && node test/feedback-wire.mjs && node test/aivs.mjs && node test/vcs-http.mjs",
+    "gold": "node eval/gold.mjs",
+    "replay": "node test/replay.mjs",
+    "smoke": "node eval/smoke-host.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "fact",
+    "verify",
+    "hallucination",
+    "ground-truth"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "meta": {
+      "title": "断言核验（自研）",
+      "description": "端口/路径/进程/文件属性/依赖版本/内存磁盘等断言在输出时比对本机真值，不符则追加核验说明"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/schemastery": "^3.18.1"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/schemastery": {
+      "optional": true
+    },
+    "@deepseek-ai/cordis": {
+      "optional": true
+    }
+  }
+}
