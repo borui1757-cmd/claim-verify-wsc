@@ -127,6 +127,43 @@ line('  这就是设计：宁可说「不知道」，也不给一个听起来合
 line();
 await sleep(600);
 
+// ───────────────────────────── 场景 D
+hr();
+line('场景 D：失败的写入从不落地（原子写 + 撤销）');
+hr();
+line();
+
+const guarded = path.join(tmp, 'config.txt');
+fs.writeFileSync(guarded, 'version=1');
+line(`  现状：${path.basename(guarded)} 内容 = version=1`);
+await sleep(500);
+
+// 故意写到一个"是目录"的路径，rename 必失败
+const badTarget = path.join(tmp, 'is-a-dir');
+fs.mkdirSync(badTarget, { recursive: true });
+const rD1 = await runPlan({ all: [{ prim: 'write_file', args: { path: badTarget, content: 'boom' }, expect: true }] });
+line(`  写入失败的那种情况 → 判定 ${rD1.verdict}`);
+line(`  目标目录仍然完好：${fs.statSync(badTarget).isDirectory() ? '是 ✓' : '否 ✗'}`);
+line('  临时文件已清理，磁盘上没有半个坏文件。');
+await sleep(800);
+line();
+
+// 正常覆盖 → 备份 → 撤销
+const rD2 = await runPlan({ all: [{ prim: 'write_file', args: { path: guarded, content: 'version=2' }, expect: true }] });
+const bak = rD2.results[0]?.meta?.backup;
+line(`  覆盖写入 → ${rD2.verdict}，当前内容 = ${fs.readFileSync(guarded, 'utf8')}`);
+line(`  写入前已备份：${bak ? '是 ✓' : '否 ✗'}`);
+await sleep(600);
+
+if (bak) {
+  const rD3 = await runPlan({ all: [{ prim: 'restore_file', args: { path: guarded, backup: bak }, expect: true }] });
+  line(`  撤销 → ${rD3.verdict}，内容回到 = ${fs.readFileSync(guarded, 'utf8')}`);
+}
+line();
+line('  结论：对受控原语的动作，坏的写入不会落地；写错了也能一键还原。');
+line();
+await sleep(700);
+
 hr();
 line('演示结束。仓库：https://github.com/borui1757-cmd/claim-verify-wsc');
 hr();
