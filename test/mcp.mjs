@@ -22,8 +22,8 @@ check('initialized 通知无响应', (await handleMessage({ jsonrpc: '2.0', meth
 
 // tools/list
 const list = await handleMessage({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
-check('tools/list 返回 2 个工具', list.result.tools.length === 2, String(list.result.tools.length));
-check('工具名正确', list.result.tools.map((t) => t.name).join(',') === 'check_path,check_claim');
+check('tools/list 返回 3 个工具', list.result.tools.length === 3, String(list.result.tools.length));
+check('工具名正确', list.result.tools.map((t) => t.name).join(',') === 'check_path,check_claim,write_verified');
 check('每个工具有 inputSchema', list.result.tools.every((t) => t.inputSchema && t.inputSchema.type === 'object'));
 
 // check_path：存在的文件
