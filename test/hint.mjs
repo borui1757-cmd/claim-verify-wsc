@@ -45,6 +45,10 @@ check('批量包含两条复核', (batch.match(/你可以自己复核/g) || []).
 const fbl = feedbackForResult({ verdict: 'contradicted', target: 'a', reason: 'r', ledgerNote: '10 分钟前成立，现在不成立' }, 'soft');
 check('反馈带账本提示', fbl.includes('10 分钟前成立'));
 
+// 自校准 / 重复假声明提示
+const fbc = feedbackForResult({ verdict: 'contradicted', target: 'a', reason: 'r', calNote: '该对象此前已被证伪 2 次' }, 'soft');
+check('反馈带校准提示', fbc.includes('证伪 2 次'));
+
 // supported 不产生反馈
 check('supported 无反馈', feedbackForResult({ verdict: 'supported', target: 'x' }, 'firm') === null);
 
