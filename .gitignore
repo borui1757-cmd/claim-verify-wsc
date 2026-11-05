@@ -1,0 +1,22 @@
+# 依赖
+node_modules/
+
+# 生成物与本地数据（含真实路径与会话内容，不入库）
+data/
+tools/
+docs/
+eval/
+
+# 系统
+Thumbs.db
+.DS_Store
+
+# 密钥（绝不入库）
+*.key
+*.pem
+claims.jsonl
+receipts.jsonl
+anchors.jsonl
+pending-plans.jsonl
+approvals.jsonl
+feedback.jsonl
