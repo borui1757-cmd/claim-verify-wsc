@@ -1,65 +1,44 @@
-# CHANGELOG
+# 0.6.0
 
-## 0.2.0-experimental.2 — 2026-11-05
+## 新增
 
-- **新增级联触发**（`lib/cascade.js`）：核验出现**硬不符**后，下一次 `agent/request`
-  自动把模型升级到指定的一档；带 `cascadeMax` 上限、已在目标模型上不重复升级。
-  升级记录写 `escalations.jsonl`。
-- 为什么挂在 `agent/request` 而不是 `llm/stream`：后者 `next` 不接受参数，换不了模型，
-  二次调用还会重复触发下游插件（计费）。详见 README B 节。
-- 新增 `test/cascade.mjs`（5 个用例：不升级 / 升级 / 只消费一次 / 受上限约束 / 防自我循环），
-  已并入 `npm test`。
+- `lib/adapter.js` —— **可插拔判定适配层**：`adjudicate(facts, claim)` → `supported | contradicted | insufficient`，
+  纯函数、零模型调用、零网络。接入说明见 `docs/对接说明.md`。
+- `lib/verified-write.js` —— 写入 + 立即 OS 核验，返回 `{ok, verified:{exists,size}, sha256}`；
+  支持 `actualBytes`/`expectedBytes` 成对字段（实测比单语义键名更易被模型利用）。
+- `lib/exit-attr.js` —— **退出码归属**：多语句命令（`npm test; Write-Output "after"`）的退出码不可归属，
+  判定降级为 `insufficient` 而不是误判成功。
+- `lib/build-id.js` —— 源码指纹，写入 `loads.jsonl` 与 debug 行，保证日志可追溯到版本。
+- `lib/outcomes.js` —— 干预与结果的关联（`intervention` / `outcome` 成对），用于事后核算干预是否必要。
+- `lib/redflag.js` —— 措辞红旗（高精确低召回），命中只用于优先核验，**未命中不豁免**。
+- `bench/` —— `ExecutionHallu-Bench`：3 族任务 × 2 种披露 × 多模型，真值取自真实磁盘。
 
-## 0.2.0-experimental.1 — 2026-11-05
+## 修复
 
-- **改名** `dsh-claim-verify` → **`claim-verify-wsc`**（作者署名 wsc；去掉了 `dsh-` 前缀，
-  因为它不再只服务 DSH）。
-- **与 DSH 解耦**：`@deepseek-ai/schemastery` 从 `lib/index.js` 挪到单独的 `lib/config.js`，
-  并改成动态 import。没有 DSH 依赖时 `Config` 为空，核心（`verifyText` / CLI）照常工作。
-- 新增程序化 API `verifyText()` / `renderNote()` 与命令行入口 `bin/claim-verify.mjs`。
-- `test/resolve.mjs` 改成非 DSH 环境自动 SKIP，可直接进 CI。
-- 修 `fmtBytes` 只到 MB 的问题（4.4 GB 会被显示成 4459.52 MB）。
+- **退出码格式**：`isolated-audit.js` / `promise.js` / `decide-alt.js` 里的正则写的是
+  `exit code [1-9]`，而 DSH 实际格式是 `[exit code: 1]`（带方括号与冒号）——失败标记全部漏判。
+- **fail-open**：`agent/request` 路由选择失败时回退到原始请求；`llm/stream` 合成 `text-delta` 失败不打断流。
 
-## 0.2.0-experimental.0 — 2026-11-05
+## 测试
 
-首个对外实验版。**默认 observe：只写日志，不追加说明。**
+- 56 个测试文件，全部通过；`npm test` 零网络、零模型调用。
+- 新增回归：`test/exit-marker.mjs`、`test/exit-attr.mjs`、`test/build-id.mjs`、
+  `test/outcomes.mjs`、`test/redflag.mjs`、`test/adapter.mjs`、`test/verified-write.mjs`。
 
-### 可核验断言（14 类，真值全部来自本机）
+## 实测结论（可复现）
 
-端口 · 路径 · 进程 PID · 文件行数 · 文件大小 · 文件哈希 · 依赖版本 ·
-内存余量 · 磁盘余量 · 服务状态 · 注册表值 · 计划任务 · 时间 · 日期/星期 · 算式 · 计数
+| 干预 | 结果 |
+|---|---|
+| 核验结论放工具结果（非事后消息） | 无保留谎报 **20/20 → 0/20**（两次独立复现） |
+| 只报状态（`size`） | **无帮助**，与不报相同 |
+| 报与意图的差（`actual`/`expected`） | 谎报 **20/20 → 0/20** |
+| 事前接种 | 明确判失败 **0/20 → 13/20**（加措辞指令 20/20） |
+| 讲道理 / 加强措辞 / 强制二元 | **无效** |
 
-### 新增（相对 0.1.x 内部版）
+**边界**：单模型为主、n≤20、仅覆盖有客观真值的声明（真实语料中约 18.5%）。
 
-- `lib/host.js`：进程 PID / 文件行数 / 文件大小 / 文件哈希 / 依赖版本 / 内存 / 磁盘 /
-  服务 / 注册表 / 计划任务，共 10 类主机断言。
-- 需要 spawn 的三类（服务/注册表/计划任务）带硬预算：单次 400ms 超时、每轮最多 3 次、
-  同名 20 秒缓存。
-- `eval/`：金集评测（`gold.mjs`，57 条用例，算 precision + recall）+ 真实语料回放
-  （`corpus.mjs` / `score.mjs`，稳定抽样）+ 真机冒烟（`smoke-host.mjs`）。
-- CI：ubuntu/windows × node 20/22/24。
+## 已知问题
 
-### 修复（内部版期间抓到的真 bug，均由评测发现）
-
-- 追加说明的流式块不合法，导致**整轮会话失败**（高危）
-- 「今天是星期三。」7 个字被长度保护整句跳过
-- `C:\Program Files` 被空格截断成 `C:\Program`
-- `#L29-L30` 行号锚点被当成路径的一部分
-- 中文引号 `“…”` 之后的解释被卷进路径值
-- 祈使句「删 X」被当成断言「X 存在」；带序号的指令被当成端口断言
-- 「`C:\x` 不在工作区里」被读成「`C:\x` 不存在」（否定作用域越界）
-- 附加疑问句「…这个页面吧」被当成断言
-- `127.0.0.1:18080/authorize` 这种 URL 被当成端口断言
-- 系统工具输出是 **GBK** 而非 UTF-8，导致服务/计划任务真值全部取不到（静默失效）
-- `schtasks` 的运行状态在「模式」栏，且必须锚定行首，否则「登录状态」被误读
-
-### 破坏性变更 / 迁移注意
-
-- `annotate` 默认值从 `true` 改为 **`false`**（observe-first）。要看到【核验】说明需显式配置。
-- 计数类断言不再有内置目录：必须配 `pagesDir` / `buttonsFile`，否则整类跳过。
-  （旧版硬编码了作者本机的 `relay/public` 路径，对其他人永远取不到真值。）
-
-### 已知局限
-
-见 README「局限」一节。核心一条：**只覆盖能取到真值的断言**，
-「文件已经创建好了」这种不带路径的说法抽不到。
+- 插件形态依赖宿主事件，MCP 形态覆盖面更广（见 README）。
+- 跨工具链条不追溯前提（实测 6/6 被"读回伪造"骗过）。
+- 中文表述的关键词分类器易漏判，论文中所有比例均已人工抽样复核。
