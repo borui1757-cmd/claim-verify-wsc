@@ -1,0 +1,13 @@
+# dsh-claim-verify 的挂载行。
+# 必须放在 bundle 层 patch 里：用户层 patch 会被 Loader 静默忽略（不报错也不加载）。
+# id 不能用已存在的行 id —— Loader 对已认识的 id 不会重放 insert。
+- insert:
+    - id: claim-verify-wsc
+      name: claim-verify-wsc
+      config:
+        enable: true
+        # annotate=false：只记 hits.jsonl，不改输出（误报率未压到 5% 以下前不拦截）
+        annotate: false
+        budgetMs: 1500
+        portTimeoutMs: 300
+        moneyTolerance: 0.3
