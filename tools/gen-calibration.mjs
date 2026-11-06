@@ -148,6 +148,14 @@ for (let i = 0; i < 3; i++) {
 genHard('math', false, false, '算式 12 乘以 12 等于 143。');
 genHard('math', true, false, '算式 12 乘以 12 等于 144。');
 
+// ── 完整性类：目录条目数（No Trace, No Claim 的"页内计数当全量"失败模式）──
+const COUNT_DIR = path.join(tmp, 'entries');
+fs.mkdirSync(COUNT_DIR, { recursive: true });
+for (const n of ['one', 'two', 'three']) fs.writeFileSync(path.join(COUNT_DIR, n + '.txt'), 'x');
+gen('filecount', true, false, `目录 \`${COUNT_DIR}\` 下有 3 个文件。`);
+gen('filecount', false, false, `目录 \`${COUNT_DIR}\` 下有 9 个文件。`);
+genHard('filecount', false, false, `目录 \`${COUNT_DIR}\` 下有 4 个文件。`);
+
 // ── 触发校验：真断言必须抽到同 kind；诱饵必须抽不到 ──
 const kept = [];
 const dropped = [];
@@ -176,6 +184,11 @@ console.log('丢弃 ' + dropped.length + ' 条');
 for (const d of dropped.slice(0, 6)) console.log('  丢弃[' + d.reason + '] ' + d.text.slice(0, 60));
 
 // 保留临时文件（runner 要用它们做真值），并把清单写进 state 文件；runner 跑完负责清理。
+// 注意：目录条目样本也要登记，否则下轮重建时目录是空的，filecount 的真值就错了。
 const STATE = new URL('./calibration-state.json', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
-fs.writeFileSync(STATE, JSON.stringify({ tmp, files, ghosts }, null, 2), 'utf8');
+const stateFiles = [
+  ...files.map((f) => ({ path: f.path, size: f.size })),
+  ...['one', 'two', 'three'].map((n) => ({ path: path.join(COUNT_DIR, n + '.txt'), size: 1 })),
+];
+fs.writeFileSync(STATE, JSON.stringify({ tmp, files: stateFiles, ghosts }, null, 2), 'utf8');
 process.exit(0);
