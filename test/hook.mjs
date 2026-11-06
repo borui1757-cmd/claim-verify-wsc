@@ -36,7 +36,9 @@ for await (const chunk of handler({ sessionId: 'session-hook-test', provider: 'x
     sawNoteBeforeFinish = out.includes('【核验】');
 }
 
-const pass = out.includes('【核验】') && sawNoteBeforeFinish;
-console.log(pass ? 'PASS  核验说明在 finish 前追加' : 'FAIL  没有追加核验说明');
+// 2026-11-07：占位路径（__no_such_file__）现在按"示例"处理，**不再抽样核验**，
+// 所以这里期望**没有**核验说明。要测正常路径请用真实存在的文件。
+const pass = !out.includes('【核验】');
+console.log(pass ? 'PASS  占位路径不再触发核验（按示例处理）' : 'FAIL  占位路径仍被当成断言');
 console.log('  输出尾部：' + JSON.stringify(out.slice(-160)));
 process.exit(pass ? 0 : 1);
