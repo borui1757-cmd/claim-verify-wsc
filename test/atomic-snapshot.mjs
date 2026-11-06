@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { readOnce, readMany, truthOf } from 'file:///C:/Users/19156/Documents/deepseek-harness/default-workspace/plugins/dsh-claim-verify/lib/atomic-snapshot.js'
+import { readOnce, readMany, truthOf, isStale, doubleSample } from 'file:///C:/Users/19156/Documents/deepseek-harness/default-workspace/plugins/dsh-claim-verify/lib/atomic-snapshot.js'
 import { verifyHostClaim } from 'file:///C:/Users/19156/Documents/deepseek-harness/default-workspace/plugins/dsh-claim-verify/lib/host.js'
 
 let pass = 0
@@ -47,6 +47,23 @@ const many = readMany([f, f, f])
 check('readMany 去重', many.size === 1)
 check('truthOf 取得到', truthOf(many, f) !== null)
 check('truthOf 取不到返回 null', truthOf(many, path.join(tmp, 'x.txt')) === null)
+
+// ── 快照失效检测：同一批里文件被改写多次 ──
+const fresh = readOnce(f)
+check('未改动 → 不过期', isStale(fresh, f) === false)
+fs.writeFileSync(f, 'changed again\n')
+check('改动后 → 过期', isStale(fresh, f) === true)
+
+// ── 双采样：活状态没有字节可绑定，只能探两次 ──
+const alwaysFalse = await doubleSample(async () => false, 10)
+check('两次都 false → 稳定 false', alwaysFalse.stable === true && alwaysFalse.value === false, alwaysFalse)
+
+let n = 0
+const flaky = await doubleSample(async () => { n += 1; return n === 1 ? false : true }, 10)
+check('两次不一致 → 不稳定，值为 null', flaky.stable === false && flaky.value === null, flaky)
+
+const alwaysTrue = await doubleSample(async () => true, 10)
+check('第一次就 true → 只探一次', alwaysTrue.samples.length === 1, alwaysTrue)
 
 fs.rmSync(tmp, { recursive: true, force: true })
 console.log(`\n${pass}/${pass + fail} 通过`)
