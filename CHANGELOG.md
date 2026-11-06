@@ -1,3 +1,56 @@
+# 0.9.51
+
+## Guardrails 真的跑起来了：他们管编排，我们管事实
+
+### 装上了
+
+```
+guardrails-ai 0.11.0 + 90 个依赖（litellm / pydantic / opentelemetry …）
+装在 tools/gr-venv（独立 venv，不污染系统 Python）
+```
+
+### 实测输出（`npm run gr:demo`）
+
+```
+输入: 先算一下 12 × 12 = 143，然后收工。
+  输出: ''                       ← FIX 生效：含错句的整句被删
+  摘要: claim-verify 核验不通过：12 × 12 = 143 -> 算出来是 144
+
+输入: 12 × 12 = 144，这个是对的。
+  输出: '12 × 12 = 144，这个是对的。'   ← 通过，原样保留
+
+输入: 现在是 03:40，我们继续。
+  输出: ''
+  摘要: claim-verify 核验不通过：现在是 03:40 -> 现在是 05:15
+```
+
+**这就是"它给我们打工"的样子**：Guardrails 的 Guard 管线负责编排/修复，
+我们的 `/verify_text` 提供真值判断。
+
+### 踩到的三个坑（都记下来了）
+
+| 坑 | 现象 | 解法 |
+|---|---|---|
+| `pip install -q` 卡住 | 日志停在 952 字节不动 | 去掉 `-q`，加 `-v --only-binary=:all: --no-cache-dir` |
+| `Guard.use(..., on_fail=)` | 0.11 改了 API | **on_fail 在实例化 validator 时传**：`ClaimVerify(on_fail="fix")` |
+| validator 未注册 | `AssertionError: not registered` | 加 `@register_validator(name="claim-verify", data_type="string")` |
+
+外加：**默认往 OTLP 上报遥测**，本机解析不了域名会刷一堆黄字 → 设 `OTEL_SDK_DISABLED=true`。
+
+### 文件
+
+```
+tools/guardrails_bridge.py   Validator + CLI（两种用法）
+tools/guardrails_demo.py     演示（三段文本，出 FIX 效果）
+tools/gr-venv/               独立 venv（不进版本控制）
+```
+
+### 边界
+
+- 桥接只负责"核验 + 给 fix_value"，编排归 Guardrails
+- 覆盖率还是那 8%
+- 装这套 Python 依赖约 90 个包，**不装也能用 CLI 模式**
+
 # 0.9.50
 
 ## 桥接 Guardrails：让他们管编排，我们管事实
