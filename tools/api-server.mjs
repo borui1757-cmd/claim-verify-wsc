@@ -16,6 +16,7 @@ import fs from 'node:fs';
 import net from 'node:net';
 import { verifyHostClaim } from '../lib/host.js';
 import { verifyProgramClaim, PROGRAM_KINDS } from '../lib/extra.js';
+import { extractClaims } from '../lib/index.js';
 import { findContradictions } from '../lib/consistency.js';
 import { VERSION } from '../lib/version.js';
 import { BUILD_ID } from '../lib/build-id.js';
@@ -142,8 +143,8 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (req.method !== 'POST' || url.pathname !== '/verify') {
-    json(res, 404, { error: 'not found', routes: ['GET /health', 'POST /verify'] });
+  if (req.method !== 'POST' || (url.pathname !== '/verify' && url.pathname !== '/verify_text')) {
+    json(res, 404, { error: 'not found', routes: ['GET /health', 'POST /verify', 'POST /verify_text'] });
     return;
   }
 
@@ -167,7 +168,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   const claims = Array.isArray(payload.claims) ? payload.claims : (payload.claim ? [payload.claim] : []);
-  if (!claims.length) {
+  if (!claims.length && url.pathname === '/verify') {
     json(res, 400, { error: '需要 claims 数组' });
     return;
   }
@@ -177,6 +178,30 @@ const server = http.createServer(async (req, res) => {
     nowMs: Number(payload.nowMs) || Date.now(),
     nowEndMs: Number(payload.nowEndMs) || undefined,
   };
+
+  // /verify_text：从一句话里抽断言再核验（给只能传文本的调用方用，例如 Guardrails validator）
+  if (url.pathname === '/verify_text') {
+    const text = String(payload.text || '');
+    if (!text) {
+      json(res, 400, { error: '需要 text' });
+      return;
+    }
+    let extracted = [];
+    try { extracted = extractClaims(text); }
+    catch { extracted = []; }
+    const results = [];
+    for (const c of extracted.slice(0, 50))
+      results.push({ claim: c, raw: c.raw, ...(await verifyOne(c, opts)) });
+    json(res, 200, {
+      ok: results.every((r) => r.ok),
+      text,
+      count: results.length,
+      okCount: results.filter((r) => r.ok).length,
+      contradictions: findContradictions(extracted).length,
+      results,
+    });
+    return;
+  }
 
   const results = [];
   for (const c of claims.slice(0, 50))
