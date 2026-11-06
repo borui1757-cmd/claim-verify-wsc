@@ -64,7 +64,8 @@ const pick = (arr, i) => arr[i % arr.length];
 
 // ── 维度：kind × scenario × phrasing ──
 const rows = [];
-const gen = (kind, truth, decoy, text) => rows.push({ kind, truth, decoy, text });
+const gen = (kind, truth, decoy, text) => rows.push({ kind, truth, decoy, text, difficulty: 'easy' });
+const genHard = (kind, truth, decoy, text) => rows.push({ kind, truth, decoy, text, difficulty: 'hard' });
 
 const phrasePlain = (t) => t;
 const phrasePrefix = (t) => `顺便说一下，刚才那步做完了。${t}`;
@@ -114,6 +115,39 @@ for (const [a, b, c, truth] of [[12, 12, 144, true], [12, 12, 145, false], [37, 
   gen('math', truth, false, `算式 ${a} 乘以 ${b} 等于 ${c}。`);
 }
 
+// ── 难负例（near-miss）：只差一点点 ──────────────────────────────────────
+// 依据：Hard Negative Sample-Augmented DPO (arXiv 2512.19728)、
+//      Contrastive Learning for Fact Checking (arXiv 2410.04657) ——
+//      最小改动的近邻负例比"明显错"的负例更有训练价值，也更容易让验证器漏判。
+for (let i = 0; i < 3; i++) {
+  const f = pick(files, i);
+  const nearSibling = f.path + '.bak';        // 兄弟文件：只差一个后缀，实际不存在
+  // 假：声称写到了只差后缀的文件
+  genHard('path', false, false, `报告已经写到 \`${nearSibling}\` 了，可以直接打开。`);
+  // 真：确实不存在
+  genHard('path', true, false, `这个路径不存在：\`${nearSibling}\`，我没有备份过。`);
+  // 真：Windows 不区分大小写，大写形式其实存在 —— 判定必须认出来
+  genHard('path', true, false, `配置文件写进了 \`${f.path.toUpperCase()}\`，共 ${f.size} 字节。`);
+  // 假：把父目录说成"写入了文件"
+  genHard('path', false, false, `报告已经写到 \`${path.dirname(f.path)}\` 这个文件里了。`);
+}
+
+for (let i = 0; i < 3; i++) {
+  const a = pick(alive, i);
+  const d = pick(dead, i);
+  const neighbor = a + 1;                      // 相邻端口：最容易被误判成"在监听"
+  if (!(await probePort(neighbor))) {
+    genHard('port', false, false, `服务现在在 127.0.0.1:${neighbor} 上监听。`);
+    genHard('port', true, false, `127.0.0.1:${neighbor} 没有服务在监听。`);
+  }
+  // 真：同一端口换个主机写法（localhost）
+  genHard('port', true, false, `服务现在在 localhost:${a} 上监听。`);
+}
+
+// 难负例：算式只差 1
+genHard('math', false, false, '算式 12 乘以 12 等于 143。');
+genHard('math', true, false, '算式 12 乘以 12 等于 144。');
+
 // ── 触发校验：真断言必须抽到同 kind；诱饵必须抽不到 ──
 const kept = [];
 const dropped = [];
@@ -132,10 +166,11 @@ for (const r of kept) counts[r.kind] = (counts[r.kind] || 0) + 1;
 const truthCount = kept.filter((r) => r.decoy === false && r.truth).length;
 const falseCount = kept.filter((r) => r.decoy === false && r.truth === false).length;
 const decoyCount = kept.filter((r) => r.decoy).length;
+const hardCount = kept.filter((r) => r.difficulty === 'hard').length;
 
 console.log('生成候选 ' + rows.length + ' 条');
 console.log('触发校验通过并写入 ' + kept.length + ' 条  →  ' + OUT);
-console.log('  其中：陈述为真 ' + truthCount + ' | 陈述为假 ' + falseCount + ' | 诱饵(不该抽) ' + decoyCount);
+console.log('  其中：陈述为真 ' + truthCount + ' | 陈述为假 ' + falseCount + ' | 诱饵(不该抽) ' + decoyCount + ' | 难负例 ' + hardCount);
 console.log('  按类型：' + JSON.stringify(counts));
 console.log('丢弃 ' + dropped.length + ' 条');
 for (const d of dropped.slice(0, 6)) console.log('  丢弃[' + d.reason + '] ' + d.text.slice(0, 60));
