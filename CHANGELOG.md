@@ -1,3 +1,64 @@
+# 0.9.8
+
+## 迈向**任务级奖励**：逐回合 delta + 哈希链
+
+前面的核验都在回答"这句话对不对"。任务级奖励要回答"**世界该变的是否变了**"，
+依据两份实践：
+
+- **Canaries, Not Faith**（DEV）：前/后快照 diff + **允许清单** + 圈外绊线文件。
+  原文自述短板：读操作不可见、写后恢复不可见 → **"当作烟雾报警器，不是黑盒"**。
+- **microsoft/agent-governance-toolkit ADR-0023**：**逐回合 SemanticDelta**
+  `{delta_id, turn_id, changes, parent_hash, delta_hash}`，
+  hash 链 `SHA-256(parent_hash || canonical_json(delta))`，篡改可检测。
+
+### 新增 `lib/task-delta.js`
+
+| 能力 | 说明 |
+|---|---|
+| `beginTurn(turnId)` | 抓基线（只扫 `roots` 白名单内的文件） |
+| `endTurn(turnId)` | 算出 create / modify / delete，**并入哈希链** |
+| `verifyChain()` | 任何篡改或删除都会被检出 |
+
+**世界范围界定**的答案就是 `roots` 白名单 + `ignore` 规则——
+只关心你圈定的目录，圈外发生什么都与我们无关。这是有意为之，不是缺陷。
+
+### 新增 `tools/task-reward.mjs`：任务级奖励的最小实现
+
+```
+任务 delta：create data.csv / notes.txt / report.md / scratch.tmp
+期望集：report.md, data.csv（达成 2/2）
+多余改动：notes.txt, scratch.tmp
+碰禁区：scratch.tmp
+
+判定：INVALID（碰了禁区）    reward: -1
+```
+
+奖励规则：
+
+| 情况 | reward |
+|---|---|
+| 期望全达成，且**无多余改动** | **+1** |
+| 期望全达成，但有多余改动 | **0**（部分） |
+| 期望缺失 / 碰禁区 | **−1** |
+
+「有没有多改」必须是硬条件——Side-Effect Loopholes 证明
+**每个 false positive 都来自未被要求的改动**。
+
+### 测试
+
+`test/task-delta.mjs` 13/13：create/modify/delete 记录、圈外不计入、
+链式 parent、无变化回合、**篡改被检出**。
+
+## 诚实边界（照抄 Canaries 那篇的自述）
+
+- **读操作完全不可见**——纯 diff 看不见"它读了什么"
+- **写后恢复不可见**——同一个回合内改了又改回去，delta 是空的
+- **网络行为没有审计**
+- 目前是**独立模块 + 演示工具**，还没接进 `llm/stream` 的回合边界
+
+> 这三条不是"以后优化"，是**快照法的原理边界**。要补得换成 syscall tracing / eBPF / FUSE，
+> 那是另一个量级的工程。
+
 # 0.9.7
 
 ## 重复执行稳定性（Trust Layer 属性 ④）
