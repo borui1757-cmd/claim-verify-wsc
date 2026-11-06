@@ -1,3 +1,68 @@
+# 0.9.24
+
+## 任务级验收**真正接出去**：`task_accept` 工具
+
+0.9.19 写了 `lib/rubric.js`，但它**没有任何调用方**——只能 import，不跑。
+（这正是今晚反复踩的坑：写了 ≠ 跑了。）
+
+现在注册成工具，和 `commit_claims` 并列：
+
+```js
+task_accept({
+  rubrics: [
+    { id:'a1', criterion:'报告已生成', weight:2,
+      evidence:[{ kind:'path', value:'C:\\out\\report.md', expect:'exists' }] },
+    { id:'a2', criterion:'服务在 3210 监听',
+      evidence:[{ kind:'port', value:'3210', expect:'listening' }] },
+    { id:'t1', criterion:'说明所用方法', role:'theory' }   // 不阻断交付
+  ]
+})
+```
+
+### 关键设计：证据从哪来
+
+每条 `evidence` 直接写成**断言**（kind/value/expect），交给现有核验器去问系统：
+
+```
+验收标准 → 具体断言 → 系统真值 → PASS/INVALID
+```
+
+这就是"可追溯"的落地，也避免了"自动从对话里挑证据"带来的挑错风险。
+
+### 分工
+
+| 工具 | 回答的问题 |
+|---|---|
+| `commit_claims` | **我这句话**对不对 |
+| `task_accept` | **这次交付**能不能收 |
+
+### 实测
+
+```
+任务验收：INVALID（评分 50）
+  [acceptance] a1 PASS  证据成立
+  [acceptance] a2 FAIL  证据不符：path
+  [theory]     t1 UNJUDGED
+```
+
+### 落盘
+
+- `task-accept.jsonl`（每次验收一条）
+- 黑盒 `task_accept` 事件（和 verify 在同一条时间线上）
+
+### 测试
+
+`test/rubric-tool.mjs` **15/15**：证据展开（path/port/filecount）、未知类型跳过、
+全通过 PASS、有失败 INVALID、**theory 不阻断**、无证据 INCONCLUSIVE、空列表。
+
+全部回归 **21 套全绿**。
+
+## 仍未做
+
+- `pass_condition`（语义判断）仍靠调用方，没有内建判定器
+- 验收结果还没在 UI 里显示成"交付单"
+- 没有"子任务动作组"的自动切分
+
 # 0.9.23
 
 ## 修掉「write 成功但路径不存在」——根因是**事件顺序**，不是正则
