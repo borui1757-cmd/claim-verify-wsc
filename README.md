@@ -3,6 +3,11 @@
 > 不给答案打分，去问真值。
 > Score nothing. Verify against reality.
 
+**让 agent 能碰生产环境——因为每一步都能被核对，且留下可举证的回执。**
+**Let agents touch production: every step is checkable, and every step leaves an attestation.**
+
+不是给模型加一个更聪明的嘴，是给它发一张**可以碰生产**的许可证。
+
 ## 三分钟看懂：它测出了什么
 
 **执行类幻觉（说做了、其实没做）可以压到 0，但有两个条件。**
