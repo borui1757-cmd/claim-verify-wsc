@@ -1,3 +1,53 @@
+# 0.9.12
+
+## 三个模块**接进主流程**（不再是零件）
+
+### ① 告警策略 → `buildNote`
+
+```
+告警策略：同一断言 60s 内只报一次；每轮最多报 3 条；其余只写日志
+```
+
+- 冷却记录**跨轮保留**（这才是治「同一句被记 312 次」的关键）
+- 每轮限额重置
+- **被抑制的仍然进 `hits.jsonl`**——只是不打扰用户
+
+### ② 一致性登记册 → 端口探测复用
+
+同一轮内对同一端口只探一次。依据 cache coherence：
+**本轮之内"世界版本"没变，就没有理由再探一次。**
+
+（真正的跨轮失效要靠 `freshness` 的版本号，那个留着下一步）
+
+### ③ 内容定义分块 → `timeline-box`
+
+新增选项 `createTimelineBox(root, { chunked: true })`：
+
+| | 全量 blob | CDC |
+|---|---|---|
+| 30KB 文件改 1 字节 | 再存 30KB | **只存少数新块** |
+| 读回历史版本 | `readAt()` | `readAt()`（从 chunks 还原） |
+
+实测：两个版本总量 < 文件大小 × 2，且两个版本内容都能完整还原。
+
+## 测试
+
+新增 `test/timeline-chunked.mjs` **7/7**。
+
+全部回归 **18 套全绿**：`timeline-chunked 7/7`、`timeline-box 17/17`、
+`coherence-chunk-alert 18/18`、`task-delta 13/13`、`freshness 15/15`、`service-cache 5/5`、
+`atomic-snapshot 17/17`、`mirror-box 14/14`、`commit-tool 10/10`、`commitments 10/10`、
+`fp-extract 9/9`、`inline-temporal 4/4`、`dry 16/16`、`inline 30/30`、
+`offline-claims 10/10`、`temporal 9/9`、`claim-reader 16/16`、`receipt 10/10`。
+
+标定集不变：`TP=44 TN=52 FP=0 FN=0` —— **接线没有引入回归**。
+
+## 诚实边界
+
+- `chunked` **默认关闭**：它改变存储布局，先观望一轮真实使用再切默认。
+- 告警策略**只有冷却+限额**，没有按历史误报率自适应。
+- 一致性登记册目前只用于端口；服务/文件仍走各自的快照与 TTL。
+
 # 0.9.11
 
 ## 三个「跨领域类比」的落地
