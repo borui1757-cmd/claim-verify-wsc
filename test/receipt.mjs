@@ -25,9 +25,19 @@ const r1 = judgeDeclaredClaims([
   { kind: 'write', target: 'C:\\Users\\x\\b.txt' },
   { kind: 'write', target: 'C:\\Users\\x\\missing.txt' },
 ], pairs);
-check('成功的写入 → supported', r1[0]?.verdict === 'supported');
+check('单源写入 → insufficient（补强证据规则）', r1[0]?.verdict === 'insufficient', JSON.stringify(r1[0]));
+check('单源写入带 independent=1', r1[0]?.independent === 1, r1[0]?.independent);
 check('失败的写入 → contradicted', r1[1]?.verdict === 'contradicted', JSON.stringify(r1[1]));
 check('没调用过 → insufficient', r1[2]?.verdict === 'insufficient');
+
+// 1b. 两个独立调用支持同一断言 → supported
+const pairs2 = [
+  mk('write', { file_path: 'C:\\Users\\x\\c.txt', content: '1' }, { callId: 'w3' }),
+  mk('write', { file_path: 'C:\\Users\\x\\c.txt', content: '1' }, { callId: 'w4' }),
+];
+const r1b = judgeDeclaredClaims([{ kind: 'write', target: 'C:\\Users\\x\\c.txt' }], pairs2);
+check('两个独立来源 → supported', r1b[0]?.verdict === 'supported', JSON.stringify(r1b[0]));
+check('independent=2', r1b[0]?.independent === 2, r1b[0]?.independent);
 
 // 2. 命令：成功 / 失败
 const r2 = judgeDeclaredClaims([
