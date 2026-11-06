@@ -63,5 +63,20 @@ check('举例词仍然不抽', nTime('比如现在 3:00 这种写法。') === 0)
 check('“之前说”不抽', nTime('之前说现在 2:40，是错的。') === 0)
 check('真实断言不被误杀', nTime('现在是 02:15，我刚查过。') === 1)
 
+// ── 不对称容差（2026-11-07）──
+// 往前 2 分钟合理；往后超过 1 分钟 = 在报"未来"，必须判错
+const winStart = new Date('2026-11-07T02:40:00+08:00').getTime()
+const winEnd = new Date('2026-11-07T02:43:00+08:00').getTime()
+const asym = [
+  ['02:38', true], ['02:40', true], ['02:43', true],
+  ['02:44', true],
+  ['02:45', false], ['02:47', false],
+  ['02:37', false],
+]
+for (const [t, expectOk] of asym) {
+  const r = await checkTime(`现在是 ${t}。`, winStart, winEnd)
+  check(`窗口 02:40–02:43 下 ${t} ${expectOk ? '放过' : '判错'}`, (r.bad === 0) === expectOk, r)
+}
+
 console.log(`\n${pass}/${pass + fail} 通过`)
 process.exit(fail === 0 ? 0 : 1)
