@@ -16,6 +16,7 @@ const tests = fs.readdirSync(testDir).filter((f) => f.endsWith('.mjs')).sort();
 
 // 2) 基准/评估（可选，缺数据时跳过）
 const gates = [
+  { name: 'doctor（环境体检）', cmd: ['tools/doctor.mjs'], required: false },
   { name: 'liar-bench（骑士基准）', cmd: ['tools/liar-bench.mjs'], required: false },
   { name: 'corpus-eval（讨论型语料）', cmd: ['tools/corpus-eval.mjs'], required: false },
   { name: 'corpus-task-eval（任务型语料）', cmd: ['tools/corpus-task-eval.mjs'], required: false },
