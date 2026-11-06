@@ -14,11 +14,11 @@ const CFG = { portTimeoutMs: 300, moneyTolerance: 0.15 }
 // 造一个"生成时刻"= 2026-11-07 01:31 的基准
 const at0131 = new Date('2026-11-07T01:31:00+08:00').getTime()
 
-async function checkTime(text, nowMs) {
+async function checkTime(text, nowMs, nowEndMs) {
   const claims = extractClaims(text).filter((c) => c.kind === 'time')
   if (!claims.length)
     return { extracted: false }
-  const res = await verifyClaims(claims, 'time-test', CFG, { nowMs })
+  const res = await verifyClaims(claims, 'time-test', CFG, { nowMs, nowEndMs })
   return { extracted: true, bad: res.bad.length, soft: res.bad.some((b) => b.soft), expect: res.bad[0] && res.bad[0].expect }
 }
 
@@ -32,13 +32,13 @@ check('不再是 soft（会真的进核验）', wrong.soft === false, wrong)
 const right = await checkTime('现在是 01:31。', at0131)
 check('说对了不报', right.bad === 0, right)
 
-// 3) 差 3 分钟（生成→核验的正常延迟）→ 不报
-const close = await checkTime('现在是 01:34。', at0131)
-check('3 分钟偏差容忍', close.bad === 0, close)
+// 3) 生成窗口内的偏差 → 不报（长回复要 3 分钟才写完，末尾写的时间本来就晚一点）
+const close = await checkTime('现在是 01:34。', at0131, at0131 + 4 * 60_000)
+check('窗口内 3 分钟不算错', close.bad === 0, close)
 
-// 4) 差 6 分钟 → 报（超过 5 分钟容差）
-const far = await checkTime('现在是 01:37。', at0131)
-check('6 分钟偏差被判错', far.bad === 1, far)
+// 4) 窗口外 → 报
+const far = await checkTime('现在是 01:37。', at0131, at0131 + 60_000)
+check('窗口外 6 分钟被判错', far.bad === 1, far)
 
 // 5) buildNote 里 time 不再被过滤
 const fake = { checked: 1, bad: [{ claim: { kind: 'time', value: { hour: 1, minute: 40 } }, expect: '现在是 01:31' }] }
@@ -57,6 +57,8 @@ check('引号里的引用不抽', nTime('我说“现在 2:40”，其实是我�
 check('带“我说”不抽', nTime('我说现在 2:40 的时候其实是错的。') === 0)
 check('带“（实际 xx）”不抽', nTime('现在 2:40（实际 02:15），我错了。') === 0)
 check('反引号里的不抽', nTime('检测到 `现在 2:40` 被判 INVALID。') === 0)
+check('代码块里的不抽', nTime('黑盒原文：\n```\n现在 2:40，我今天连续犯了两个同类错误\n```\n') === 0)
+check('引用块里的不抽', nTime('> 现在 2:40，错误示例\n') === 0)
 check('举例词仍然不抽', nTime('比如现在 3:00 这种写法。') === 0)
 check('“之前说”不抽', nTime('之前说现在 2:40，是错的。') === 0)
 check('真实断言不被误杀', nTime('现在是 02:15，我刚查过。') === 1)
