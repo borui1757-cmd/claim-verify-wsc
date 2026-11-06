@@ -64,5 +64,19 @@ check('能从 ```claims 块解析声明', Array.isArray(extractClaimsBlock(block
 check('没有声明块 → null', extractClaimsBlock('纯文本，没有代码块') === null);
 
 try { fs.unlinkSync(keyPath); } catch { /* 清理失败无所谓 */ }
+// 2026-11-07：原子修订的四个键 + 三个时间戳（来自另一个会话的诊断）
+const atomic = buildReceipt({
+  sessionId: 'session-atomic-test',
+  claims: [{ kind: 'write', target: 'C:\\Users\\x\\a.txt' }],
+  pairs: [mk('write', { file_path: 'C:\\Users\\x\\a.txt', content: '1' }, { callId: 'w1' })],
+  keyPath: null,
+  clocks: { tAction: Date.now() - 60000, tClaim: Date.now() - 30000 },
+});
+check('回执带三时钟', Boolean(atomic.clocks && atomic.clocks.tAction && atomic.clocks.tClaim && atomic.clocks.tVerify), atomic.clocks);
+check('claim 带 txid', typeof atomic.claims[0].txid === 'string' && atomic.claims[0].txid.length > 3, atomic.claims[0].txid);
+check('claim 带 ack 字段（默认 false，不伪造）', atomic.claims[0].ack === false);
+check('claim 带 tClaim/tAction/tVerify', Boolean(atomic.claims[0].tClaim && atomic.claims[0].tAction && atomic.claims[0].tVerify));
+check('三个时刻互不相同', new Set([atomic.claims[0].tAction, atomic.claims[0].tClaim, atomic.claims[0].tVerify]).size === 3);
+
 console.log(`\n${pass}/${pass + fail} 通过`);
 process.exit(fail === 0 ? 0 : 1);
