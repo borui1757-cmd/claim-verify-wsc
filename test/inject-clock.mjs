@@ -14,7 +14,7 @@ const req1 = { messages: [{ role: 'system', content: 'S' }, { role: 'user', cont
 const out1 = injectClock(req1, at)
 check('注入到最后一条 user', out1.messages[1].content.includes('[系统注入] 当前时间 2026-11-07 02:52:31'), out1.messages[1].content)
 check('系统提示未被改动', out1.messages[0].content === 'S')
-check('原对象未被修改', req1.messages[1].content === '你好')
+check('原地注入（宿主可能忽略返回值）', req1.messages[1].content.includes('[系统注入]'))
 
 // ② 幂等：已注入就不重复
 const out2 = injectClock(out1, at)
