@@ -1,3 +1,52 @@
+# 0.9.14
+
+## 核验判定进黑盒：从「能查」到「能修」
+
+0.9.13 的黑盒能记录工具调用与世界变化，但**看不到核验判了什么**——
+于是出事时仍然得猜：是模型撒谎，还是世界变了。
+
+### 新增 `verify` 事件
+
+核验完成后，把每条断言的判定写进同一条哈希链：
+
+```json
+{"type":"verify","payload":{
+  "kind":"path","valueHash":"ac8d8342…",
+  "verdict":"PASS/INVALID","soft":false,"reason":"这个路径不存在"}}
+```
+
+### 现在一条时间线能讲完整故事
+
+```
+tool/call  write   argsHash=96600b6e…
+delta      create  {"create":1}
+verify     path    PASS     ← 当时确实对
+delta      delete  {"delete":1}
+verify     path    INVALID  ← 世界变了，不是模型撒谎
+```
+
+**这就是「能修」**：不用猜，因果链直接摆在那里。
+今天最顽固的时点差类误报，在这个视图下是**一眼可辨**的。
+
+### 测试
+
+`test/recorder.mjs` 11/11 覆盖 verify 事件入链；全部回归 **19 套全绿**。
+
+模拟验证（真实跑过）：
+
+```
+tool/call → delta(create) → verify(PASS) → delta(delete) → verify(INVALID)
+链校验: {"ok":true,"count":5}
+```
+
+## 仍然缺的（通往完整闭环）
+
+| 缺 | 影响 |
+|---|---|
+| **内容回放** | 只有哈希，无法还原参数/文件内容；要接 `timeline-box` |
+| **自动归因** | 目前要人看时间线；可做"三步对齐"报告 |
+| **从事故生成回归用例** | 有事件序列就能自动生成 test，还没做 |
+
 # 0.9.13
 
 ## 黑盒记录仪（FDR）
