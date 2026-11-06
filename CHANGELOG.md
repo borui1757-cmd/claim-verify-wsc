@@ -1,3 +1,65 @@
+# 0.9.19
+
+## 任务级验收（Rubric）：从"断言对"走到"交付成不成"
+
+### 为什么做
+
+我们一直在做**断言级**核验（路径存在吗、端口在听吗），但用户要的是**任务级**回答。
+
+文献里这叫 **granularity mismatch**（arXiv 2510.03253，ICLR 2026）：
+
+> 轨迹级太粗（无法精确归因），步骤级太细（看不到多步行为的价值）；
+> 关键是中间那一层——**语义连贯的动作组 / 验收项**。
+
+### 结构：照抄工业界 Rubric 验收
+
+| 字段 | 作用 | 谁执行 |
+|---|---|---|
+| `required_evidence` | 判定前需要哪些证据 | **代码层预检**（用我们 19 类原语） |
+| `pass_condition` | 满足什么条件算通过 | **语义判断**（可接 LLM，也可先规则） |
+| `weight` | 参与评分 | 代码计算 |
+| `role` | **有没有阻断权**（acceptance / theory / reflection） | 代码聚合 |
+
+### 新增 `lib/rubric.js`
+
+- `normalizeRubric()`：**非法证据类型当场拒绝**（避免"字段存在但不生效"那个坑）
+- `evidencePrecheck()`：只判"能不能进评审"，不判达标；theory/reflection 不因缺证据被拦
+- `evaluateTask()`：三态结论
+  - 任一 acceptance 判定失败 → **INVALID**
+  - 有 forced（缺证据/无判定器）→ **INCONCLUSIVE**
+  - 否则 → **PASS**
+- `summarizeTask()`：**"未通过"只列 acceptance**（theory 失败进"学习缺口"，不阻断交付）
+
+### 实测（`tools/accept-task.mjs`）
+
+```
+证据采集：path=成立  port=成立
+逐条验收：
+  [acceptance] a1 PASS  文件存在
+  [acceptance] a2 FAIL  只有 2 个章节（要求 3）
+  [acceptance] a3 PASS  端口在听
+  [theory]     t1 FAIL  报告里没有说明方法
+
+最终：验收 INVALID（评分 60，acceptance 2/3）；未通过: a2
+学习缺口（不阻断交付）：
+  - t1：报告里没有说明方法
+```
+
+**这就是"任务级回答"的样子**：不只知道文件在不在，还知道**这次交付能不能收**。
+
+### 测试
+
+`test/rubric.mjs` **27/27**：非法字段拒绝、证据预检、可选证据不拦截、
+角色分桶、权重评分、缺判定器 → INCONCLUSIVE、摘要文案。
+
+全部回归 **21 套全绿**。
+
+## 仍然缺的（通往真正的任务级）
+
+- `pass_condition` 目前**靠调用方给 judge**，没有内建的语义判定（接 LLM 是下一步）
+- 还没有"子任务动作组"的自动切分（HPL 那篇的核心）
+- 验收结果还没进黑盒（`verify` 事件只到断言级）
+
 # 0.9.18
 
 ## 账单口径对齐：唯一真源 + 显式窗口
