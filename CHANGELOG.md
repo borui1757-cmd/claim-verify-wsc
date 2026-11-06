@@ -1,3 +1,71 @@
+# 0.9.38
+
+## CI + 一键部署：把"改了没生效"这类错误变成不可能
+
+### ① `tools/ci.mjs` —— 本地 CI
+
+跑**全部 80+ 个测试文件** + 三个基准/语料评估，失败即退出非零：
+
+```
+✅ test/time-claim.mjs        25/25 通过
+✅ test/rubric-tool.mjs       15/15 通过
+...
+✅ liar-bench（骑士基准）     召回 ≥90%、误报 ≤10% → 通过
+✅ corpus-task-eval（任务型）  覆盖率 = 2/2 = 100%
+
+== 汇总：87/88 通过 ==
+```
+
+**CI 一上来就抓到 3 个我们一直没跑的失败测试**：
+
+| 测试 | 原因 |
+|---|---|
+| `receipt-hook` | 单源降级后 supported 应为 0（**语义变化，已改期望**）|
+| `report-tool` | 同上（**已改期望**）|
+| `hook` | 占位路径现在按"示例"处理（**已改期望**）|
+
+还有一个 `receipt-hook` 的**信封验签**失败，登记为已知问题（不许悄悄绿）：
+
+```js
+KNOWN_FAILURES = { 'test/receipt-hook.mjs': '信封验签用的密钥目录不一致，待查' }
+```
+
+### ② `.github/workflows/ci.yml`
+
+推上去就有真 CI：每次 push/PR 跑 `node tools/ci.mjs`，并上传 `ci-report.json`。
+
+### ③ `tools/deploy.ps1` —— 一条命令部署
+
+```
+[1/5] 跑 CI（不过就拒绝部署）
+[2/5] 同步到 profile
+[3/5] 校验两边 buildId 一致
+[4/5] （可选 -Restart）重启宿主
+[5/5] 自检：宿主实际加载的 buildId 是否等于目标
+```
+
+### ④ 顺带修掉一个"自检骗自己"的坑
+
+部署自检原来读 `loads.jsonl` 最后一条，但**测试进程调 apply() 也会写这条记录**，
+于是自检读到的是假 PID、真 buildId——看起来"已生效"，其实宿主还在跑旧代码。
+
+修法两条：
+
+1. CI 给测试设 `CLAIM_VERIFY_NO_LOAD_LOG=1`，测试不再污染加载记录
+2. 自检改为**按 3080 监听进程的 PID 去匹配记录**，匹配不到就明确报"无法确认"
+
+实测修好后立刻暴露真相：
+
+```
+host pid=30028 version=0.9.32 buildId=dc8491303108
+WARN: host still on old code (expected caa2974fac4a), restart needed
+```
+
+## 这条最重要
+
+> **验证工具本身也要被验证。**
+> 一个会"骗自己说已部署"的自检，比没有自检更危险。
+
 # 0.9.37
 
 ## 给拦截装熔断器：解决"误拦会卡死"
