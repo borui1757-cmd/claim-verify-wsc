@@ -39,6 +39,10 @@ if (fs.existsSync(SET)) {
     try { calib.add(JSON.parse(line).kind); } catch { /* ignore */ }
   }
 }
+// 4) 由另外两个标定工具覆盖的 kind（不在生成的标定集里）
+//    calibration-sideeffect.mjs → 行数/大小/哈希
+//    calibration-host.mjs       → 依赖版本/服务/内存/磁盘
+for (const k of ['lines', 'size', 'hash', 'pkgversion', 'service', 'mem', 'disk']) calib.add(k);
 
 const all = [...new Set([...extracted, ...verified, ...calib])].sort();
 
