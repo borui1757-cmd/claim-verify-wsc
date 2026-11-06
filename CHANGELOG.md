@@ -1,3 +1,59 @@
+# 0.9.40
+
+## 动作分档：解决"审批疲劳"，把决定权还给人
+
+### 先说结论：二元开关是错的
+
+0.9.39 的能力边界只有"拦/不拦"。这必然落入两个坑：
+
+- **什么都问** → 用户闭眼点"允许"，等于没问
+- **什么都不问** → 出事来不及
+
+### 两份依据
+
+**① [Microsoft Agent Framework 的 HITL](https://learn.microsoft.com/en-za/agent-framework/integrations/ag-ui/human-in-the-loop)**
+- 工具级 `approval_mode`：`always_require` / `never_require` / **`conditional`**
+- 需要审批时**这一轮中断**，工具不执行
+- **审批权归服务端**，客户端不能伪造
+- 最佳实践：**逐个审批不合并**；只读不需要
+
+**② [Planoly：修审批疲劳](https://www.planoly.com/blog/agent-approval-fatigue-fix)**
+> "不是纪律问题，是设计问题。"
+> **不确定就归到更高一档**——多审一次的代价远小于漏掉一次。
+
+### 新增 `lib/tier.js`
+
+| 档 | 判据 | 处置 |
+|---|---|---|
+| **T1** | 只读（read/glob/grep/list…） | `allow` 不问 |
+| **T2** | 写入、普通命令（可回滚） | `allow-and-queue` 放行 + 进待审队列 |
+| **T3** | 支付/凭据/删除/白名单外/**未知工具** | `stop` 停下来等人 |
+
+**关键规则：不认识的工具按 T3 处理。** 这正是"不确定取更高档"。
+
+### 接进 `agent/pre-step`
+
+```js
+cfg.tierEnabled = false      // 默认关，先看日志再开
+cfg.tierMode    = 'warn'     // 'warn' | 'reject'
+```
+
+落盘：
+- `tier.jsonl` —— T3 的拦截记录
+- `review-queue.jsonl` —— T2 的待审队列（**批量看，不逐条弹**）
+
+### 测试
+
+`test/tier.mjs` **17/17**：只读→T1、写入→T2、支付域名/转账/删除/凭据/白名单外/未知工具→T3、
+处置映射、文案渲染。
+
+CI 全量 **89/90 通过**（1 个已知问题）。
+
+## 这次改动的本质
+
+> **不再由代码替用户决定"能不能"，而是决定"该谁来问、问得多细"。**
+> T1 不问（不值得打扰）、T2 攒着看（一次看一批）、T3 必停（不能赌）。
+
 # 0.9.39
 
 ## 能力边界：比核验更靠前的一道防线
