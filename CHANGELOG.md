@@ -1,3 +1,64 @@
+# 0.9.37
+
+## 给拦截装熔断器：解决"误拦会卡死"
+
+### 问题
+
+0.9.36 的事前拦截能阻止错误动作，但它**也会误拦**。
+误拦一次，会话就卡住——**比漏报更糟**。
+
+### 解法是标准电路熔断器
+
+依据 agent 工程里的 [Circuit Breaker 模式](https://github.com/mahsumaktas/agent-evolution-kit/blob/main/docs/circuit-breaker.md)：
+
+```
+CLOSED ──拦 3 次──> OPEN（只警告，不再拒绝）
+   ↑                    │ 冷却 5 分钟
+   │                    ↓
+   └──探测成功── HALF-OPEN（放一次试探）
+                        │ 探测失败
+                        └──> 回到 OPEN
+```
+
+### 落进 `lib/breaker.js`
+
+| 状态 | 行为 |
+|---|---|
+| **CLOSED** | 正常拦截 |
+| **OPEN** | **自动降级为只警告**（fail-open） |
+| **HALF-OPEN** | 冷却后放一次，成功即恢复 |
+
+**核心原则：拦截器的默认失败方向是"放行"，不是"拦住"。**
+因为卡死一次，用户就再也不会打开它。
+
+### 接进 preflight
+
+```js
+cfg.preflightThreshold  = 3       // 连续拦截几次就熔断
+cfg.preflightCooldownMs = 300000  // 冷却多久放一次试探
+```
+
+拦截时写 `preflight.jsonl`，带熔断器状态：
+
+```json
+{"kind":"truncation","breaker":{"mayBlock":false,"state":"OPEN","note":"连续拦截 3 次，熔断（改为只警告）"}}
+```
+
+### 测试
+
+`test/breaker.mjs` **11/11**：拦 2 次不熔断、第 3 次熔断、熔断后拒绝拦截、
+冷却后试探、试探成功恢复、试探失败回 OPEN、放行清零计数。
+
+全部回归 **11 套全绿**。
+
+## 三层防护的完整形态
+
+```
+预防（注入真值） → 拦截（preflight + 熔断器） → 检测（核验 + 黑盒）
+                        ↑
+                 这次补的就是它的"逃生阀"
+```
+
 # 0.9.36
 
 ## 反过来阻止错误：事前拦截（preflight）
