@@ -71,9 +71,9 @@ check('生成了 receipts.jsonl', okFile);
 if (okFile) {
   const receipt = JSON.parse(fs.readFileSync(receiptFile, 'utf8').trim().split('\n').pop());
   check('3 条声明', receipt.summary.total === 3, JSON.stringify(receipt.summary));
-  check('1 支持', receipt.summary.supported === 1);
+  check('0 支持（单源证据按补强规则降级）', receipt.summary.supported === 0);
   check('1 反驳', receipt.summary.contradicted === 1);
-  check('1 无证据', receipt.summary.insufficient === 1);
+  check('2 无证据（1 条本来无证据 + 1 条单源降级）', receipt.summary.insufficient === 2);
   // 新格式：带 envelope（Ed25519）就用信封验；旧格式退回 HMAC
   const envOk = receipt.envelope
     ? verifyRecord(receipt, loadOrCreateKeypair(path.dirname(logFile)).publicKey).ok
