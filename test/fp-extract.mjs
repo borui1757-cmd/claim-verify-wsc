@@ -30,7 +30,7 @@ check('引用块里的端口不当断言', '> **现在启动第二个实例（�
 // ── 三条正例必须照旧成立（防止修过头）──
 check('正常端口断言仍要抓到', '服务已经在 127.0.0.1:3210 上监听。', [{ kind: 'port', polarity: 'pos' }])
 check('正常路径断言仍要抓到', '配置写进了 `C:\\Users\\19156\\.dsh\\profiles\\web\\package.json`。', [{ kind: 'path', polarity: 'pos' }])
-check('否定路径断言仍是 neg', '这个路径不存在：`C:\\Users\\19156\\Desktop\\__no_such__.md`', [{ kind: 'path', polarity: 'neg' }])
+check('否定路径断言仍是 neg', '这个路径不存在：`C:\\Users\\19156\\Desktop\\季度报告-20261106.md`', [{ kind: 'path', polarity: 'neg' }])
 
 // ── 时态：历史叙述不核，现况照旧核（2026-11-06 加）──
 check('历史端口不抽断言', '找到第二个实例（端口 3099），当时确实起来过。', 'none')
