@@ -63,5 +63,16 @@ const r10 = adjudicate({}, { kind: 'write', target });
 check('空 facts → insufficient', r10.verdict === 'insufficient', JSON.stringify(r10));
 check('无 claim 类型 → insufficient', adjudicate({}, {}).verdict === 'insufficient');
 
+// ⑪ 结构优先判定（零误伤策略）
+import { adjudicateStructured } from '../lib/adapter.js';
+const s1 = adjudicateStructured({ writes: [{ path: target, isError: false }] }, { kind: 'write', target });
+check('结构优先：成功写入 → supported', s1.verdict === 'supported', JSON.stringify(s1));
+const s2 = adjudicateStructured({ cmds: [{ cmd: 'npm test', text: 'all good' }] }, { kind: 'cmd', target: 'npm test' });
+check('结构优先：只有文本 → insufficient', s2.verdict === 'insufficient', JSON.stringify(s2));
+const s3 = adjudicateStructured({ cmds: [{ cmd: 'npm test', text: 'boom\n[exit code: 1]' }] }, { kind: 'cmd', target: 'npm test' });
+check('结构优先：可归属退出码 → contradicted', s3.verdict === 'contradicted', JSON.stringify(s3));
+const s4 = adjudicateStructured({ tests: { run: true, passed: true } }, { kind: 'test' });
+check('结构优先：测试通过 → supported', s4.verdict === 'supported');
+
 console.log(`\n${pass}/${pass + fail} 通过`);
 process.exit(fail === 0 ? 0 : 1);
