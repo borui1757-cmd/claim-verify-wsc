@@ -1,3 +1,63 @@
+# 0.9.39
+
+## 能力边界：比核验更靠前的一道防线
+
+### 起因
+
+用户问："能不能阻止模型假装给微信余额加钱？"
+
+诚实的答案是：**我们核不了余额**（真值在腾讯服务器上）。
+但正确的问题不是"它有没有撒谎"，而是"**我们为什么允许它碰这个**"。
+
+> **银行柜员防盗窃不靠事后审计，靠没有金库钥匙。**
+
+### 新增 `lib/capability.js`
+
+三条规则，从宽到严：
+
+| 规则 | 判据 | 例子 |
+|---|---|---|
+| **工具白名单** | 不在 `allowedTools` 里就拦 | `wechat_transfer` 未登记 |
+| **敏感目标** | 参数命中支付/资金/凭据模式 | `api.wxpay.com`、`转账`、`id_rsa` |
+| **目录边界** | 复用 preflight 的 `allowedRoots` | 越界写 |
+
+默认敏感规则（`SENSITIVE_PATTERNS`）：
+
+```
+payment-domain   微信支付/支付宝/PayPal/Stripe 域名
+wallet-keyword   微信支付、转账、红包、提现、收款码…
+credential-file  id_rsa、.pem、credentials.yaml、.env
+```
+
+### 接进 `agent/pre-step`
+
+```js
+cfg.capabilityEnabled        = false   // 默认关
+cfg.capabilityMode           = 'warn'  // 'warn' | 'reject'
+cfg.capabilityTools          = []      // 工具白名单，空=不判
+cfg.capabilityAllowSensitive = false   // 显式允许敏感操作
+```
+
+拦截写 `capability.jsonl`：`{tool, kind, reason, mode}`。
+
+### 测试
+
+`test/capability.mjs` **12/12**：空策略放行、白名单拦截、支付域名拦、
+转账关键词拦、凭据文件拦、显式允许、普通命令不受影响、文案渲染。
+
+CI 全量 **88/89 通过**（1 个已知问题）。
+
+## 现在的防线顺序
+
+```
+第 0 道  能力边界   —— 根本碰不到（这次补的）
+第 1 道  事前拦截   —— 能碰但会被拦（0.9.36 + 熔断器）
+第 2 道  真值核验   —— 碰了之后核对（19 类原语）
+第 3 道  黑盒回放   —— 事后追责（哈希链）
+```
+
+**越靠前越可靠。** 核验只能告诉你"它说了什么"，权限能保证"它做不到"。
+
 # 0.9.38
 
 ## CI + 一键部署：把"改了没生效"这类错误变成不可能
