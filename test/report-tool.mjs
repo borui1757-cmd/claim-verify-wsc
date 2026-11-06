@@ -30,7 +30,7 @@ const out = await tool.execute({
 }, exec);
 
 check('返回 summary', out && out.summary && out.summary.total === 3, JSON.stringify(out && out.summary));
-check('1 支持 / 1 反驳 / 1 无证据', out.summary.supported === 1 && out.summary.contradicted === 1 && out.summary.insufficient === 1);
+check('0 支持 / 1 反驳 / 2 无证据（单源降级）', out.summary.supported === 0 && out.summary.contradicted === 1 && out.summary.insufficient === 2);
 check('results 带 verdict 与 target', out.results.every((r) => ['supported', 'contradicted', 'insufficient'].includes(r.verdict) && typeof r.target === 'string'));
 check('反驳项带证据工具名', out.results.find((r) => r.verdict === 'contradicted')?.evidenceTool === 'pwsh');
 
