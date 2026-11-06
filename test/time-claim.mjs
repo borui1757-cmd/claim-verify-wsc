@@ -48,5 +48,18 @@ check('buildNote 会显示时间不符', buildNote(fake).includes('时间'), bui
 const fakeDate = { checked: 1, bad: [{ claim: { kind: 'date', value: { month: 11, day: 6 } }, expect: '今天是 11 月 7 日', soft: true }] }
 check('date 仍不进核验', buildNote(fakeDate) === '')
 
+// ── 2026-11-07 修：引用/举例不该被当成实时断言 ──
+function nTime(text) {
+  return extractClaims(text).filter((c) => c.kind === 'time').length
+}
+check('正常声称会抽到', nTime('现在是 02:40。') === 1)
+check('引号里的引用不抽', nTime('我说“现在 2:40”，其实是我搞错了。') === 0)
+check('带“我说”不抽', nTime('我说现在 2:40 的时候其实是错的。') === 0)
+check('带“（实际 xx）”不抽', nTime('现在 2:40（实际 02:15），我错了。') === 0)
+check('反引号里的不抽', nTime('检测到 `现在 2:40` 被判 INVALID。') === 0)
+check('举例词仍然不抽', nTime('比如现在 3:00 这种写法。') === 0)
+check('“之前说”不抽', nTime('之前说现在 2:40，是错的。') === 0)
+check('真实断言不被误杀', nTime('现在是 02:15，我刚查过。') === 1)
+
 console.log(`\n${pass}/${pass + fail} 通过`)
 process.exit(fail === 0 ? 0 : 1)
