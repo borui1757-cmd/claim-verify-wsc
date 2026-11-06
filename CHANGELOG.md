@@ -1,3 +1,43 @@
+# 0.9.20
+
+## 实时核验也进黑盒 + 一次真实的"写坏文件"事故
+
+### ① `inline-check` 事件
+
+刚才那条误报（「write 返回成功，但路径不存在」）来自 **inline 实时核验**，
+但黑盒只记 `verify`（断言核验），查不到它——**闭环在这里断了**。
+
+现在补上：
+
+```json
+{"type":"inline-check","payload":{"tool":"write","flagged":true}}
+```
+
+**记的是"被标记了"，不是文案**——隐私与体积都小。
+
+### ② 真实事故：用 PowerShell 改 JSON，把 `package.json` 写坏了
+
+```
+Set-Content package.json $c -NoNewline
+```
+
+PowerShell 5.1 的 `Set-Content` 默认按 ANSI 写，UTF-8 中文描述被破坏，
+`JSON.parse` 直接报 `Bad control character` → **宿主下次启动会读不到插件**。
+
+恢复方式：从 GitHub 拉回原文（`gh-proxy` 可用），用 Node 以 UTF-8 重写。
+
+**教训**：改 JSON / 源码，**永远用 Node 或 `-Encoding utf8`**，不要用默认的 `Set-Content`。
+
+### 测试
+
+`test/rubric.mjs` 27/27、`test/recorder.mjs` 11/11 保持绿；
+`package.json` 用 Node 校验可解析。
+
+## 仍未做的
+
+- inline 事件还没接进 `incident.mjs`（它只扫 `verify`）
+- 那条「先写后删」的误报还没修（已记录为待办）
+
 # 0.9.19
 
 ## 任务级验收（Rubric）：从"断言对"走到"交付成不成"
