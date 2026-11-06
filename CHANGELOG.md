@@ -1,3 +1,55 @@
+# 0.9.13
+
+## 黑盒记录仪（FDR）
+
+**为什么做这个**：实时核验（TCAS）必须**判得准**，误报会让人关掉它；
+黑盒（FDR）只需要**记得全**——它不判对错，所以**不受 ρ₀/ρ₁ 约束**。
+记 80% 就有 80% 的价值，这是唯一"做多少算多少"的路。
+
+### 新增 `lib/recorder.js`
+
+| 能力 | 说明 |
+|---|---|
+| `toolCall / message / delta / event` | 连续记录，**只存哈希与长度，不存全文** |
+| 哈希链 | `hash = sha256(prev + canonical(body))`，篡改可检出 |
+| 环形缓冲 | 超过 `maxRecords` 淘汰最早记录，链首改 `checkpoint` |
+| `replay(t)` | 回放：某时刻之前发生了什么（按类型统计 + 最后一条） |
+| `between(t0,t1)` | 取时间窗 |
+| `verifyChain` | 窗口内链校验 |
+| `head()` | 链头，可交给 RFC3161 做外部锚定 |
+
+### 已接入 `session/event`
+
+- `tool/call` → 工具名 + 参数哈希
+- `tool/result` → 成败 + 结果长度 + 哈希
+- `user/message` / `assistant/message` → 角色 + 长度 + 哈希
+
+落盘位置：`~/.dsh/dsh-claim-verify/blackbox/events.jsonl`
+
+### 新增 `tools/blackbox.mjs`
+
+```bash
+node tools/blackbox.mjs                 # 摘要 + 链校验
+node tools/blackbox.mjs --replay 00:30  # 回放到今天 00:30
+node tools/blackbox.mjs --tail 20       # 看最后 20 条
+node tools/blackbox.mjs --verify        # 只校验链
+```
+
+### 测试
+
+`test/recorder.mjs` **11/11**：记录、链校验、**不存原文**、回放、时间窗、
+**篡改被检出**、环形淘汰后仍可校验。
+
+全部回归 **19 套全绿**。
+
+## 诚实边界
+
+- **只存哈希**：能证明"发生了某次调用"，但**不能还原参数内容**。
+  要全文得靠 `timeline-box` 里另存的文件版本，两者尚未打通。
+- 环形淘汰后，被丢弃段只剩 `checkpoint` 哈希，**无法单独验证**（需要外部锚定配合）。
+- 还没接 RFC3161 锚定，链头目前只存在本地。
+- **黑盒只记录，不报警**——它不解决"当场发现错误"，那是核验层的事。
+
 # 0.9.12
 
 ## 三个模块**接进主流程**（不再是零件）
