@@ -1,3 +1,54 @@
+# 0.9.0
+
+## 让模型自己声明：承诺块（`lib/commitments.js`）
+
+语料复测的结论是：真实文本里**可核验断言只有 1.4 条/100 句**，靠正则捞收益有限。
+出路是**让 agent 显式做出承诺**，而不是等断言自然出现。
+
+依据两篇：
+
+- **ARC**（NeurIPS 2026）：每步要求 agent 做两个显式承诺——全局进度陈述 + 局部结果预测，
+  预测必须被下一次观测证实；ALFWorld/WebShop/WebArena 分别 +6.4 / +3.5 / +9.6。
+- **CLAIMRECEIPT**（NeurIPS 2026）：断言要绑定证据，判定分**三态 PASS / INVALID / INCONCLUSIVE**
+  而不是成功/失败；实测 11/11 故障检出、**良性命中 0/8 误报**。
+
+### 格式
+
+模型自愿输出（放在 ```claims 围栏里）：
+
+```claims
+[{"kind":"path","value":"C:\\a\\b.txt","expect":"exists","evidence":"tool:write"},
+ {"kind":"port","value":3080,"expect":"listening"}]
+```
+
+### 实现
+
+| 能力 | 说明 |
+|---|---|
+| `parseCommitments(text)` | 解析承诺块；`expect` 推出极性（`not_exists` → 否定）；解析失败不抛错 |
+| `verifyCommitments(items, io)` | 逐条核验 → `PASS` / `INVALID` / `INCONCLUSIVE` 三态；核验器**依赖注入**，避免与 index.js 循环引用 |
+| `summarize()` | 只在**有 INVALID** 时产出可展示文案 |
+| 已接入 `llm/stream` | 检测到承诺块就核验，写 `commitments.jsonl`，有 INVALID 时追加一行提示 |
+
+### 设计选择
+
+- **空块不算错**：模型不声明就不核，绝不因为"没声明"扣分（避免奖励 abstention）。
+- **INCONCLUSIVE 不是失败**：真值取不到就记"无法判定"，保持"绝不猜"。
+- **不改模型输出主流程**：只在末尾追加一行摘要，且仅当有 INVALID。
+
+## 测试
+
+新增 `test/commitments.mjs`（10/10）：解析（含坏 JSON / 空数组 / 极性推导）+ 三态核验 + 摘要规则。
+
+全部回归：`fp-extract 9/9`、`inline-temporal 4/4`、`dry 16/16`、`inline 30/30`、
+`offline-claims 10/10`、`temporal 9/9`、`claim-reader 16/16`、`receipt 10/10`、`commitments 10/10`。
+
+## 已知局限
+
+- 承诺块**靠模型自愿**写，不能强制；实测前需要先确认模型愿意写（否则形同虚设）。
+- `INCONCLUSIVE` 目前不区分"真值取不到"和"kind 不支持"，后续应拆开统计。
+- 还没做**证据绑定校验**（`evidence` 字段只记录、不核对是否真是那次工具调用）。
+
 # 0.8.8
 
 ## 新增：召回审计（找出"该抽没抽"）
