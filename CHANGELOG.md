@@ -1,3 +1,62 @@
+# 0.9.50
+
+## 桥接 Guardrails：让他们管编排，我们管事实
+
+### 新增 `tools/guardrails-bridge.py`
+
+分工写清楚了：
+
+```
+Guardrails 管结构（FIX / REFRAIN / REASK / 流式）
+我们管事实（/verify_text：把句子抽成断言，去问系统真值）
+```
+
+两种用法：
+
+**A. 独立用（不需要装 guardrails-ai）**
+
+```bash
+py tools/guardrails-bridge.py "先算一下 12 × 12 = 143，然后收工。"
+```
+
+输出：
+
+```json
+{"ok": false, "checked": 1,
+ "bad": [{"raw": "12 × 12 = 143", "expect": "算出来是 144"}],
+ "fixed_text": ""}
+```
+
+**`fixed_text` 就是 Guardrails 的 FIX 语义：把含错句的那句删掉。**
+
+**B. 作为 Validator 挂进他们的 Guard**
+
+```python
+from guardrails_bridge import ClaimVerify
+Guard().use(ClaimVerify, on_fail="fix")
+```
+
+（装了 `guardrails-ai` 才启用；没装时只有 CLI。）
+
+### 配套：API 增加 `POST /verify_text`
+
+只传一句话进去，自动抽断言并核验——因为 Guardrails 的 validator 只拿到文本。
+
+### 实测
+
+```
+输入：先算一下 12 × 12 = 143，然后收工。
+输出：ok=false  checked=1
+      错句 12 × 12 = 143 → 应为 算出来是 144
+      fixed_text: ""（该句已删）
+```
+
+### 边界
+
+- Guardrails 框架本体安装很重（litellm 等一堆依赖），**CLI 模式不需要它**
+- 桥接只做"事实核验 + 给 fix_value"，编排（重试/流式）仍归 Guardrails
+- 我们的覆盖率仍然是那 8%
+
 # 0.9.49
 
 ## HTTP 接口：从"宿主插件"变成"能被别人调用的服务"
