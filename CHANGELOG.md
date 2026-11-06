@@ -1,3 +1,50 @@
+# 0.9.1
+
+## 承诺改成**工具调用**，不再靠模型自觉写代码块
+
+0.9.0 用 ```claims 围栏，问题很明确：**模型可以不写**。
+按结构化输出的通行纪律——"从散文里解析 JSON"是**反模式 #5**——正确的做法是让 schema 做约束：
+
+> 要么用原生 Structured Outputs，要么**定义一个工具、把目标形状写进 `input_schema`、强制调用**。
+> 结构由 schema 约束，不是靠散文哄出来的。
+
+### 新增 `lib/commit-tool.js` → `commit_claims` 工具
+
+```jsonc
+{ "claims": [
+  { "kind": "path", "value": "C:\\a\\b.txt", "expect": "exists", "evidence": "tool:write" },
+  { "kind": "port", "value": "3080", "expect": "listening" }
+]}
+```
+
+| 特性 | 说明 |
+|---|---|
+| schema 强制 | `kind` / `expect` 都是**枚举**，模型没法写歪 |
+| 三态返回 | `PASS` / `INVALID` / `INCONCLUSIVE`（对齐 CLAIMRECEIPT） |
+| 当场反馈 | 判定结果**直接返回给模型**，它还有机会改口 |
+| 逐条明细 | 有 INVALID 时 render 会逐条列出 `kind + 原因` |
+| 落盘 | `commitments.jsonl`，`source: "tool"` |
+
+### 与 0.9.0 的关系
+
+两者并存，不是替代：
+
+- **`commit_claims` 工具**：主路径，schema 强制
+- **```claims 代码块**：降级路径，模型不用工具时仍能声明
+
+### 测试
+
+新增 `test/commit-tool.mjs`（10/10）：值归一化（port/pid 转数字、filecount 解析 JSON、坏 JSON 返 null）、
+极性推导、缺依赖时不抛错。
+
+全部回归 10 套绿：`commitments 10/10`、`commit-tool 10/10`、`fp-extract 9/9`、`inline-temporal 4/4`、
+`dry 16/16`、`inline 30/30`、`offline-claims 10/10`、`temporal 9/9`、`claim-reader 16/16`、`receipt 10/10`。
+
+## 仍需验证
+
+**模型到底会不会调用 `commit_claims`？** 这只能靠真实对话测——和 0.9.0 的"自愿写块"一样，
+工具版能保证**格式**，但保证不了**使用率**。下次启动后看 `commitments.jsonl` 有多少 `source: "tool"` 即可。
+
 # 0.9.0
 
 ## 让模型自己声明：承诺块（`lib/commitments.js`）
