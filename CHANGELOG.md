@@ -1,3 +1,52 @@
+# 0.9.6
+
+## 新鲜度与再验证（把"固定 TTL"换成"按类型的保质期"）
+
+### 问题
+
+之前的 TTL 缓存是**一刀切**的，而且掩盖真实变化。文献把这个叫
+**assurance freshness gap**（"The Assurance Freshness Gap: Risk-Bounded Revalidation … for
+Tool-Using AI Agents"）——**验证结论有保质期，且不同事实变质速度完全不同**。
+
+### 新增 `lib/freshness.js`
+
+| 函数 | 作用 |
+|---|---|
+| `stamp(kind, verdict)` | 盖时间戳 + 按类型定保质期 |
+| `isFresh(rec)` | 是否还在保质期内 |
+| `remainingMs(rec)` | 剩余新鲜时间 |
+| `revalidateIfStale(rec, fn)` | **新鲜就复用、过期才重验**（risk-bounded 最小实现） |
+| `staleCount(list)` | 统计有多大比例的结论已经过期 |
+
+### 按类型定保质期（关键设计）
+
+| 类型 | TTL | 理由 |
+|---|---|---|
+| `hash` | **0（永久）** | 内容寻址：哈希不变就永远对 |
+| `port` | 5s | 随时起停 |
+| `service` | 3s | 与缓存一致 |
+| `pid` / `mem` | 2s | 变化最快 |
+| `path` / `size` / `lines` / `filecount` | 30s | 文件相对稳定 |
+| `pkgversion` | 300s | 装完基本不变 |
+
+**核心洞察**：`hash` 是唯一可以"永久新鲜"的类型——因为它绑定的是**内容**而不是**时点**。
+这正好和 0.9.3 的"绑定字节"同一个道理。
+
+### 接入
+
+`verifyCommitments` 的每条结果现在带 `at` / `ttlMs`，消费方可以判新鲜度再决定要不要重验。
+
+### 测试
+
+新增 `test/freshness.mjs` 15/15：默认 TTL、哈希永久、自定义 TTL、过期才重验、缺口统计。
+全部回归 13 套绿。
+
+## 仍未解决（诚实）
+
+- **探测成功但随后挂掉**仍无法主动发现——需要事件驱动（如 Windows `NotifyServiceStatusChange`
+  可订阅服务状态变化），而不是轮询。引入事件监听要常驻进程，风险和复杂度都上一个台阶，暂不做。
+- `revalidateIfStale` 只是**工具**，还没接进主流程：目前没有"消费结论时再验"的调用点。
+
 # 0.9.5
 
 ## 服务状态：短 TTL 缓存（让"双采样"不再是两倍代价）
