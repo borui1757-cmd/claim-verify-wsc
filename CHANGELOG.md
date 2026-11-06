@@ -1,3 +1,63 @@
+# 0.9.49
+
+## HTTP 接口：从"宿主插件"变成"能被别人调用的服务"
+
+### 为什么
+
+用户问："Guardrails 能不能给我们打工？"
+
+诚实的答案：**现在不能，因为我们没有可被调用的接口。**
+我们做成了宿主插件——最深的位置，也是最封闭的位置。
+
+### `tools/api-server.mjs`（零依赖，只用 node:http）
+
+```
+node tools/api-server.mjs --port=8600
+
+GET  /health
+POST /verify   {"claims":[{"kind":"path","value":"C:/x","expect":"exists"}]}
+```
+
+返回：
+
+```json
+{"ok":false,"count":1,"contradictions":0,
+ "results":[{"claim":{...},"ok":false,"verdict":"contradicted","expect":"路径不存在：C:/__nope__.txt"}]}
+```
+
+### 实测（7/7）
+
+```
+存在的文件           → supported
+不存在的文件         → contradicted（给出实际状态）
+端口 3080 在听       → supported（TCP 探活）
+端口 59999 没听      → supported
+算术 12×12=143（错） → contradicted（算出来是 144）
+算术 12×12=144（对） → supported
+一条自相矛盾         → 矛盾=1
+```
+
+### 支持什么
+
+| 类别 | 断言 |
+|---|---|
+| 程序类 | math / time / date / count |
+| 本机类 | path / port / filecount / pid / lines / size / hash / pkgversion / mem / disk / service / registry / task |
+
+### 边界（要写清楚）
+
+- 只绑 **127.0.0.1**，不对外
+- 默认**无鉴权**；设 `CLAIM_VERIFY_API_TOKEN` 后要求 Bearer
+- 单次最多 50 条断言，请求体上限 256KB
+- **仍只覆盖可观测事实**，覆盖率那 8% 没变
+
+## 这一步的意义
+
+> **有了 /verify，"谁给谁打工"才成为一个真问题。**
+
+之前我们只能被 DSH 装进去；现在任何语言（Python 的 Guardrails validator、
+别的 agent 框架、CI 脚本）都能调。
+
 # 0.9.48
 
 ## 抄 FIX/REFRAIN：从"提醒你错了"到"直接给你对的"
