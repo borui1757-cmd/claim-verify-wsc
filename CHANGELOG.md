@@ -1,3 +1,40 @@
+# 0.8.3
+
+## 覆盖率的**可测量化**（把"覆盖窄"变成一个数字）
+
+新增 `tools/coverage-report.mjs`：扫描源码里实际支持的断言类型，对照标定集实际覆盖到的类型，
+输出三列矩阵（抽取 / 判定 / 标定）。
+
+依据：
+- **Davinci-Tool**（arXiv 2610.16867）：覆盖 = 环境 × 验证器，**不能只数原语个数**；
+  底座是「可恢复状态 + 执行轨迹 + 结果 + 验证器」四件套。
+- **Side-Effect Loopholes**（arXiv 2610.09142）：用 mutation testing 测验证器，
+  发现**每一个 false positive 都来自"未被要求的改动"**，而不是漏做/做错；
+  一条 count 断言就能挡住重复写入。
+
+### 实测（当前代码）
+
+```
+断言类型 22 | 判定层已实现 19 (86%) | 有标定覆盖 4 (18%)
+三件齐全（抽取+判定+标定）: 2/22 = 9%
+副作用类断言（count/size/lines/hash）: 4/4 已实现
+```
+
+**这就是第 2 条限制（覆盖窄）的真实数字：判定层有 19 类，但有独立真值标定的只有 4 类（18%）。**
+
+### 缺口清单（有抽取/判定但没标定的 18 类）
+
+`buttons, count, date, disk, hash, lines, mem, model, money, pages, pkgversion, registry, reject, service, size, task, time, write`
+
+其中 `service / registry / task / disk / mem / pkgversion / size / lines / hash` 是**最容易补**的
+（真值只需一次系统查询），`model / money / time / date` 属于上下文相关，优先级低。
+
+### 下一步（按下性价比）
+
+1. 先补**副作用类**的真值标定（count / size / hash / lines）——文献指出的最大空洞
+2. 再补**系统状态类**（service / registry / task / disk / mem / pkgversion）
+3. 最后才是 `model / money / time / date`（需要上下文，标定成本高）
+
 # 0.8.2
 
 ## 难负例（near-miss）—— 只差一点点才算真考验
