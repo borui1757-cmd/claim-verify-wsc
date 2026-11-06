@@ -71,13 +71,25 @@ for (const c of cases) {
   // 独立真值：对每条断言问系统"现在到底怎样"，再按极性推期望
   for (const cl of mine) {
     const got = flagged.has(keyOf(cl.kind, cl.value));
-    let real = null;
-    if (cl.kind === 'path') real = fs.existsSync(cl.value);
-    else if (cl.kind === 'port') real = await probePort(cl.value);
-    else continue; // pid/math 不做独立真值，跳过统计
-
     // 肯定断言：实际成立才算对；否定断言：实际不成立才算对
-    const shouldBeBad = cl.polarity === 'neg' ? real === true : real === false;
+    let shouldBeBad = null;
+    if (cl.kind === 'path') {
+      const exists = fs.existsSync(cl.value);
+      shouldBeBad = cl.polarity === 'neg' ? exists : !exists;
+    }
+    else if (cl.kind === 'port') {
+      const up = await probePort(cl.value);
+      shouldBeBad = cl.polarity === 'neg' ? up : !up;
+    }
+    else if (cl.kind === 'filecount') {
+      let n = null;
+      try { n = fs.readdirSync(cl.value.dir).length; } catch { n = null; }
+      if (n === null) continue;
+      shouldBeBad = n !== cl.value.n;
+    }
+    else {
+      continue; // pid/math 不做独立真值，跳过统计
+    }
     const dd = byDiff[diffOf(c)];
     calibSteps.push({
       at: new Date().toISOString(),
