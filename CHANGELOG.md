@@ -1,3 +1,69 @@
+# 0.9.17
+
+## 预算银行：流水 / 风控 / 授信
+
+银行为什么能省钱？不是因为它会赚钱，是因为它**记账 + 风控 + 授信**。
+我们早就有账本（`dsh-bill`，14,000+ 条），只是没人看。
+
+### 行业依据
+
+| 手段 | 数据 |
+|---|---|
+| 语义缓存 | [AWS 实测：成本 **-86%**、延迟 **-88%**](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/semantic-caching-overview.html) |
+| 前缀缓存 | 命中价比 miss 低 **30–50 倍** |
+| 上下文管理 | 有实践报告 token 成本 **-80%** |
+
+**共同点**：省钱的本质是**减少重复**（重复调用、重复重发前缀），不是"挑便宜模型"。
+
+### 新增 `tools/bank.mjs`
+
+```bash
+node tools/bank.mjs                # 今日流水 + 预算状态
+node tools/bank.mjs --risk         # 风控异常
+node tools/bank.mjs --days 7       # 近 7 天
+node tools/bank.mjs --session <id> # 单会话
+node tools/bank.mjs --json         # 机器可读
+```
+
+### 三条风控规则
+
+| 规则 | 判据 | 对应现象 |
+|---|---|---|
+| **cold-start** | `input ≥ 100k` 且 `cacheRead/(cacheRead+input) < 10%` | 重启后整段前缀全价重发 |
+| **big-call** | 单条 ≥ ¥0.4 | 异常大请求 |
+| **restart-storm** | 30 分钟内 ≥2 次冷启动 | 连续重启 |
+
+### 实测（今天）
+
+```
+调用数: 189     花费: ¥3.56 / 预算 ¥20（17.8%）
+风控: 3 条异常，冷启动损失 ¥1.09
+
+[cold-start] 00:34:55 ¥0.52  输入 484,102 token，命中仅 1.9%
+[cold-start] 00:39:32 ¥0.57  输入 521,091 token，命中仅 1.0%
+[restart-storm] 00:39:32 ¥1.09  30 分钟内连续冷启动（= 连续重启）
+```
+
+**这 ¥1.09 就是我今晚为了验证 buildId 连续重启的代价。** 数据完全对得上。
+
+### 授信
+
+`tools/bank-config.json`（首次运行自动生成）：
+
+```json
+{ "dailyBudgetCny": 20, "alertAt": 0.8,
+  "bigCallCny": 0.4, "coldStartInput": 100000, "coldStartRatio": 0.1 }
+```
+
+超 80% 预警，超 100% 提示降级。
+
+## 诚实边界
+
+- 只读本地账本，**没有和 provider 官方账单对账**
+- `restart-storm` 是**代理指标**（用冷启动间隔推断重启），不是真的重启事件
+- 预算只是提示，**不会真的阻断请求**
+- 语义缓存没做（我们场景重复查询少，收益有限）
+
 # 0.9.16
 
 ## 更正：时间断言不该静音——真值一直都在
