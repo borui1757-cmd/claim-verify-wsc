@@ -1,6 +1,6 @@
 {
   "name": "claim-verify-wsc",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "执行类幻觉核验器：把 agent 的完成声明拿去问本机真值（端口/路径/进程/注册表/计划任务/内存/磁盘），零模型调用；含可插拔判定适配层与可复现基准。",
   "type": "module",
   "license": "MIT",
