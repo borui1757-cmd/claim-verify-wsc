@@ -1,3 +1,77 @@
+# 0.9.53
+
+## 任务清单前置：覆盖率从"量句子"改成"量承诺"
+
+### 依据
+
+[ClaimReceipt (arXiv 2609.01992)](https://arxiv.org/abs/2609.01992) 的核心结论：
+
+> **核查断言需要两样：充分证据 + 一个「承诺宇宙」（committed universe），让遗漏变得可见。**
+> 通用的日志和哈希链，两者都答不了。
+
+它的做法：**推理前先提交任务清单并冻结**，每步产生签名回执，
+少一条 → `INCONCLUSIVE_COVERAGE`。成本只有推理时间的 0.021%。
+
+### 这解决了我们的天花板问题
+
+```
+旧：覆盖率 = 能抽到的断言 / 句子数      天花板 ≈ 8%
+新：覆盖率 = 有回执的清单项 / 承诺项数   天花板 ≈ 100%
+```
+
+**不是把门开大，是换了一把尺子。**
+
+### 新增 `lib/manifest.js`
+
+```js
+createManifest({sessionId, title, items})  // 冻结清单（摘要只覆盖内容，不含时间）
+computeCoverage(manifest, receipts)       // → {total, covered, coverage, missing, verdict}
+saveManifest / loadLatestManifest / renderCoverage
+```
+
+判定只有三种：
+
+```
+COVERAGE_PASS            清单每一项都有回执
+INCONCLUSIVE_COVERAGE    有缺项（不是失败，是证据不全）
+NO_MANIFEST              没登记清单
+```
+
+### 已接进回执流程
+
+每生成一条回执，如果有清单，就：
+
+1. 算出当前覆盖率
+2. 写进回执的 `manifest` 字段
+3. **缺项时在输出里追加一行**【覆盖率不足】
+
+### 新增 `tools/manifest-cli.mjs`
+
+```bash
+node tools/manifest-cli.mjs new --session=s1 --title="发版" --file=plan.json
+node tools/manifest-cli.mjs check --session=s1
+```
+
+实测：
+
+```
+已登记清单：3 项  digest=1a0eed835b8f6b48…
+覆盖率：0/3 = 0.0%
+判定：INCONCLUSIVE_COVERAGE
+缺项：m1 m2 m3
+```
+
+### 测试
+
+`test/manifest.mjs` **16/16**：摘要稳定（不含时间戳）、全覆盖通过、缺项判 INCONCLUSIVE、
+contradicted 不算覆盖、路径宽松匹配、存读、空清单。
+
+CI 全量 **96/97 通过**。
+
+## 这是今天唯一改变天花板的改动
+
+前面所有版本都在抬"抽取命中率"（地板），这一个抬的是"覆盖对象"（天花板）。
+
 # 0.9.52
 
 ## 对抗测试打醒了：换种说法 10/12 漏掉 → 4/12
