@@ -47,7 +47,23 @@ const rows = fs.readFileSync(RECORDS, 'utf8').trim().split('\n').map((l) => {
 
 const now = Date.now();
 const days = Number(argOf('--days', 0));
-const since = days ? now - days * 86400_000 : (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); })();
+const startArg = argOf('--start', null);
+// 口径说明（2026-11-07 对齐）：
+//   本工具默认按**本地零点**结算（日历日）。
+//   内置的 bill_stats 是按**宿主进程启动**结算（本次运行以来）——两者都没有错，
+//   只是窗口不同，所以数字对不上。要复现 bill_stats 的口径：--start <宿主启动时间>。
+let since;
+if (startArg) {
+  since = /^\d+$/.test(startArg) ? Number(startArg) : new Date(startArg).getTime();
+}
+else if (days) {
+  since = now - days * 86400_000;
+}
+else {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  since = d.getTime();
+}
 const scope = rows.filter((r) => r.time >= since);
 
 const cny = (usd) => (usd * CNY);
@@ -122,7 +138,7 @@ if (sessArg) {
 }
 
 // 默认：流水 + 余额
-console.log(`预算银行（${days ? '近 ' + days + ' 天' : '今天'}）\n`);
+console.log(`预算银行（窗口：${new Date(since).toLocaleString('zh-CN')} → 现在）\n`);
 console.log('  调用数: ' + scope.length);
 console.log('  花费:   ' + fmt(total) + '   ≈ $' + total.toFixed(4));
 if (!days) {
