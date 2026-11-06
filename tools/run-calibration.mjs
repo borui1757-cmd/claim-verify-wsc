@@ -47,6 +47,9 @@ const keyOf = (kind, value) => kind + '|' + JSON.stringify(typeof value === 'str
 
 let TP = 0, TN = 0, FP = 0, FN = 0, missed = 0, decoy = 0, decoyHit = 0;
 const notes = [];
+// 2026-11-06：按难度分开统计（难负例才看得出验证器真正行不行）
+const byDiff = { easy: { TP: 0, TN: 0, FP: 0, FN: 0 }, hard: { TP: 0, TN: 0, FP: 0, FN: 0 } };
+const diffOf = (c) => (c.difficulty === 'hard' ? 'hard' : 'easy');
 // 2026-11-06：顺手吐一份**平衡的** per-step 训练样本（PRM 需要正样本，hits.jsonl 只有负的）
 const calibSteps = [];
 
@@ -75,6 +78,7 @@ for (const c of cases) {
 
     // 肯定断言：实际成立才算对；否定断言：实际不成立才算对
     const shouldBeBad = cl.polarity === 'neg' ? real === true : real === false;
+    const dd = byDiff[diffOf(c)];
     calibSteps.push({
       at: new Date().toISOString(),
       sessionId: 'calibration',
@@ -84,10 +88,10 @@ for (const c of cases) {
       observation: shouldBeBad ? '与系统真值不符' : '与系统真值一致',
       reward: shouldBeBad ? -1 : 1,
     });
-    if (!shouldBeBad && !got) TN += 1;
-    else if (!shouldBeBad && got) { FP += 1; notes.push(`判错: ${c.text.slice(0, 58)}`); }
-    else if (shouldBeBad && got) TP += 1;
-    else { FN += 1; notes.push(`漏放: ${c.text.slice(0, 58)}`); }
+    if (!shouldBeBad && !got) { TN += 1; dd.TN += 1; }
+    else if (!shouldBeBad && got) { FP += 1; dd.FP += 1; notes.push(`判错: ${c.text.slice(0, 58)}`); }
+    else if (shouldBeBad && got) { TP += 1; dd.TP += 1; }
+    else { FN += 1; dd.FN += 1; notes.push(`漏放: ${c.text.slice(0, 58)}`); }
   }
 }
 
@@ -98,6 +102,13 @@ console.log('四格  TP=' + TP + '  TN=' + TN + '  FP=' + FP + '  FN=' + FN + ' 
 console.log('ρ₀ 假阳性率 = ' + FP + '/' + (FP + TN) + ' = ' + pct(FP, FP + TN));
 console.log('ρ₁ 假阴性率 = ' + FN + '/' + (FN + TP) + ' = ' + pct(FN, FN + TP));
 console.log('诱饵误抽   = ' + decoyHit + '/' + decoy + ' = ' + pct(decoyHit, decoy));
+
+console.log('\n按难度：');
+for (const [k, v] of Object.entries(byDiff)) {
+  const total = v.TP + v.TN + v.FP + v.FN;
+  if (!total) continue;
+  console.log(`  ${k.padEnd(5)} n=${String(total).padStart(3)}  ρ₀=${pct(v.FP, v.FP + v.TN)}  ρ₁=${pct(v.FN, v.FN + v.TP)}   (TP=${v.TP} TN=${v.TN} FP=${v.FP} FN=${v.FN})`);
+}
 if (notes.length) {
   console.log('\n问题明细（最多 10 条）：');
   for (const n of notes.slice(0, 10)) console.log('  ' + n);
