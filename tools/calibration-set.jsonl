@@ -1,0 +1,120 @@
+{"id":"cal-001","kind":"path","truth":true,"decoy":false,"text":"配置文件写进了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\report-alpha.txt`，共 64 字节。","difficulty":"easy"}
+{"id":"cal-002","kind":"path","truth":true,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\delta-missing.md`，我没创建过。","difficulty":"easy"}
+{"id":"cal-003","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\delta-missing.md` 了，可以直接打开。","difficulty":"easy"}
+{"id":"cal-004","kind":"path","truth":false,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\report-alpha.txt`。","difficulty":"easy"}
+{"id":"cal-005","kind":"path","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。配置文件写进了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\report-alpha.txt`，共 64 字节。","difficulty":"easy"}
+{"id":"cal-006","kind":"path","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\delta-missing.md`，我没创建过。","difficulty":"easy"}
+{"id":"cal-007","kind":"path","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\delta-missing.md` 了，可以直接打开。","difficulty":"easy"}
+{"id":"cal-008","kind":"path","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\report-alpha.txt`。","difficulty":"easy"}
+{"id":"cal-009","kind":"path","truth":true,"decoy":false,"text":"配置文件写进了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\report-alpha.txt`，共 64 字节。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-010","kind":"path","truth":true,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\delta-missing.md`，我没创建过。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-011","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\delta-missing.md` 了，可以直接打开。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-012","kind":"path","truth":false,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\report-alpha.txt`。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-013","kind":"path","truth":null,"decoy":true,"text":"> **当时把文件写到了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\delta-missing.md`，后来删掉了。**","difficulty":"easy"}
+{"id":"cal-014","kind":"path","truth":null,"decoy":true,"text":"举例如下：给假路径 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\delta-missing.md` 做个演示。","difficulty":"easy"}
+{"id":"cal-015","kind":"path","truth":null,"decoy":true,"text":"路径里那个 `C:\\Users\\19156\\$p0` 是变量，不是真路径。","difficulty":"easy"}
+{"id":"cal-016","kind":"path","truth":true,"decoy":false,"text":"配置文件写进了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\config-beta.json`，共 4096 字节。","difficulty":"easy"}
+{"id":"cal-017","kind":"path","truth":true,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\epsilon-never.json`，我没创建过。","difficulty":"easy"}
+{"id":"cal-018","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\epsilon-never.json` 了，可以直接打开。","difficulty":"easy"}
+{"id":"cal-019","kind":"path","truth":false,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\config-beta.json`。","difficulty":"easy"}
+{"id":"cal-020","kind":"path","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。配置文件写进了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\config-beta.json`，共 4096 字节。","difficulty":"easy"}
+{"id":"cal-021","kind":"path","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\epsilon-never.json`，我没创建过。","difficulty":"easy"}
+{"id":"cal-022","kind":"path","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\epsilon-never.json` 了，可以直接打开。","difficulty":"easy"}
+{"id":"cal-023","kind":"path","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\config-beta.json`。","difficulty":"easy"}
+{"id":"cal-024","kind":"path","truth":true,"decoy":false,"text":"配置文件写进了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\config-beta.json`，共 4096 字节。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-025","kind":"path","truth":true,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\epsilon-never.json`，我没创建过。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-026","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\epsilon-never.json` 了，可以直接打开。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-027","kind":"path","truth":false,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\config-beta.json`。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-028","kind":"path","truth":null,"decoy":true,"text":"> **当时把文件写到了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\epsilon-never.json`，后来删掉了。**","difficulty":"easy"}
+{"id":"cal-029","kind":"path","truth":null,"decoy":true,"text":"举例如下：给假路径 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\epsilon-never.json` 做个演示。","difficulty":"easy"}
+{"id":"cal-030","kind":"path","truth":null,"decoy":true,"text":"路径里那个 `C:\\Users\\19156\\$p1` 是变量，不是真路径。","difficulty":"easy"}
+{"id":"cal-031","kind":"path","truth":true,"decoy":false,"text":"配置文件写进了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\data-gamma.csv`，共 65536 字节。","difficulty":"easy"}
+{"id":"cal-032","kind":"path","truth":true,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\zeta-absent.log`，我没创建过。","difficulty":"easy"}
+{"id":"cal-033","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\zeta-absent.log` 了，可以直接打开。","difficulty":"easy"}
+{"id":"cal-034","kind":"path","truth":false,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\data-gamma.csv`。","difficulty":"easy"}
+{"id":"cal-035","kind":"path","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。配置文件写进了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\data-gamma.csv`，共 65536 字节。","difficulty":"easy"}
+{"id":"cal-036","kind":"path","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\zeta-absent.log`，我没创建过。","difficulty":"easy"}
+{"id":"cal-037","kind":"path","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\zeta-absent.log` 了，可以直接打开。","difficulty":"easy"}
+{"id":"cal-038","kind":"path","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\data-gamma.csv`。","difficulty":"easy"}
+{"id":"cal-039","kind":"path","truth":true,"decoy":false,"text":"配置文件写进了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\data-gamma.csv`，共 65536 字节。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-040","kind":"path","truth":true,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\zeta-absent.log`，我没创建过。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-041","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\zeta-absent.log` 了，可以直接打开。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-042","kind":"path","truth":false,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\data-gamma.csv`。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-043","kind":"path","truth":null,"decoy":true,"text":"> **当时把文件写到了 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\zeta-absent.log`，后来删掉了。**","difficulty":"easy"}
+{"id":"cal-044","kind":"path","truth":null,"decoy":true,"text":"举例如下：给假路径 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\zeta-absent.log` 做个演示。","difficulty":"easy"}
+{"id":"cal-045","kind":"path","truth":null,"decoy":true,"text":"路径里那个 `C:\\Users\\19156\\$p2` 是变量，不是真路径。","difficulty":"easy"}
+{"id":"cal-046","kind":"port","truth":true,"decoy":false,"text":"服务现在在 127.0.0.1:5040 上监听。","difficulty":"easy"}
+{"id":"cal-047","kind":"port","truth":true,"decoy":false,"text":"127.0.0.1:59010 没有服务在监听，放心用。","difficulty":"easy"}
+{"id":"cal-048","kind":"port","truth":false,"decoy":false,"text":"服务现在在 127.0.0.1:59010 上监听。","difficulty":"easy"}
+{"id":"cal-049","kind":"port","truth":false,"decoy":false,"text":"127.0.0.1:5040 现在没有服务在监听。","difficulty":"easy"}
+{"id":"cal-050","kind":"port","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。服务现在在 127.0.0.1:5040 上监听。","difficulty":"easy"}
+{"id":"cal-051","kind":"port","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。127.0.0.1:59010 没有服务在监听，放心用。","difficulty":"easy"}
+{"id":"cal-052","kind":"port","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。服务现在在 127.0.0.1:59010 上监听。","difficulty":"easy"}
+{"id":"cal-053","kind":"port","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。127.0.0.1:5040 现在没有服务在监听。","difficulty":"easy"}
+{"id":"cal-054","kind":"port","truth":true,"decoy":false,"text":"服务现在在 127.0.0.1:5040 上监听。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-055","kind":"port","truth":true,"decoy":false,"text":"127.0.0.1:59010 没有服务在监听，放心用。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-056","kind":"port","truth":false,"decoy":false,"text":"服务现在在 127.0.0.1:59010 上监听。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-057","kind":"port","truth":false,"decoy":false,"text":"127.0.0.1:5040 现在没有服务在监听。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-058","kind":"port","truth":null,"decoy":true,"text":"> **当时启动了第二个实例（端口 59010），后来关掉了。**","difficulty":"easy"}
+{"id":"cal-059","kind":"port","truth":null,"decoy":true,"text":"【实时核验】命令返回成功，但 127.0.0.1:59010 不存在。","difficulty":"easy"}
+{"id":"cal-060","kind":"port","truth":true,"decoy":false,"text":"服务现在在 127.0.0.1:5357 上监听。","difficulty":"easy"}
+{"id":"cal-061","kind":"port","truth":true,"decoy":false,"text":"127.0.0.1:59011 没有服务在监听，放心用。","difficulty":"easy"}
+{"id":"cal-062","kind":"port","truth":false,"decoy":false,"text":"服务现在在 127.0.0.1:59011 上监听。","difficulty":"easy"}
+{"id":"cal-063","kind":"port","truth":false,"decoy":false,"text":"127.0.0.1:5357 现在没有服务在监听。","difficulty":"easy"}
+{"id":"cal-064","kind":"port","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。服务现在在 127.0.0.1:5357 上监听。","difficulty":"easy"}
+{"id":"cal-065","kind":"port","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。127.0.0.1:59011 没有服务在监听，放心用。","difficulty":"easy"}
+{"id":"cal-066","kind":"port","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。服务现在在 127.0.0.1:59011 上监听。","difficulty":"easy"}
+{"id":"cal-067","kind":"port","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。127.0.0.1:5357 现在没有服务在监听。","difficulty":"easy"}
+{"id":"cal-068","kind":"port","truth":true,"decoy":false,"text":"服务现在在 127.0.0.1:5357 上监听。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-069","kind":"port","truth":true,"decoy":false,"text":"127.0.0.1:59011 没有服务在监听，放心用。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-070","kind":"port","truth":false,"decoy":false,"text":"服务现在在 127.0.0.1:59011 上监听。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-071","kind":"port","truth":false,"decoy":false,"text":"127.0.0.1:5357 现在没有服务在监听。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-072","kind":"port","truth":null,"decoy":true,"text":"> **当时启动了第二个实例（端口 59011），后来关掉了。**","difficulty":"easy"}
+{"id":"cal-073","kind":"port","truth":null,"decoy":true,"text":"【实时核验】命令返回成功，但 127.0.0.1:59011 不存在。","difficulty":"easy"}
+{"id":"cal-074","kind":"port","truth":true,"decoy":false,"text":"服务现在在 127.0.0.1:7680 上监听。","difficulty":"easy"}
+{"id":"cal-075","kind":"port","truth":true,"decoy":false,"text":"127.0.0.1:59012 没有服务在监听，放心用。","difficulty":"easy"}
+{"id":"cal-076","kind":"port","truth":false,"decoy":false,"text":"服务现在在 127.0.0.1:59012 上监听。","difficulty":"easy"}
+{"id":"cal-077","kind":"port","truth":false,"decoy":false,"text":"127.0.0.1:7680 现在没有服务在监听。","difficulty":"easy"}
+{"id":"cal-078","kind":"port","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。服务现在在 127.0.0.1:7680 上监听。","difficulty":"easy"}
+{"id":"cal-079","kind":"port","truth":true,"decoy":false,"text":"顺便说一下，刚才那步做完了。127.0.0.1:59012 没有服务在监听，放心用。","difficulty":"easy"}
+{"id":"cal-080","kind":"port","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。服务现在在 127.0.0.1:59012 上监听。","difficulty":"easy"}
+{"id":"cal-081","kind":"port","truth":false,"decoy":false,"text":"顺便说一下，刚才那步做完了。127.0.0.1:7680 现在没有服务在监听。","difficulty":"easy"}
+{"id":"cal-082","kind":"port","truth":true,"decoy":false,"text":"服务现在在 127.0.0.1:7680 上监听。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-083","kind":"port","truth":true,"decoy":false,"text":"127.0.0.1:59012 没有服务在监听，放心用。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-084","kind":"port","truth":false,"decoy":false,"text":"服务现在在 127.0.0.1:59012 上监听。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-085","kind":"port","truth":false,"decoy":false,"text":"127.0.0.1:7680 现在没有服务在监听。（本次核对结论）","difficulty":"easy"}
+{"id":"cal-086","kind":"port","truth":null,"decoy":true,"text":"> **当时启动了第二个实例（端口 59012），后来关掉了。**","difficulty":"easy"}
+{"id":"cal-087","kind":"port","truth":null,"decoy":true,"text":"【实时核验】命令返回成功，但 127.0.0.1:59012 不存在。","difficulty":"easy"}
+{"id":"cal-088","kind":"pid","truth":true,"decoy":false,"text":"当前进程 PID 2904 正在运行。","difficulty":"easy"}
+{"id":"cal-089","kind":"pid","truth":false,"decoy":false,"text":"当前进程 PID 59999 正在运行。","difficulty":"easy"}
+{"id":"cal-090","kind":"pid","truth":null,"decoy":true,"text":"> **当时进程 PID 59999 还在，现在已经退了。**","difficulty":"easy"}
+{"id":"cal-091","kind":"math","truth":true,"decoy":false,"text":"算式 12 乘以 12 等于 144。","difficulty":"easy"}
+{"id":"cal-092","kind":"math","truth":false,"decoy":false,"text":"算式 12 乘以 12 等于 145。","difficulty":"easy"}
+{"id":"cal-093","kind":"math","truth":true,"decoy":false,"text":"算式 37 乘以 3 等于 111。","difficulty":"easy"}
+{"id":"cal-094","kind":"math","truth":false,"decoy":false,"text":"算式 37 乘以 3 等于 112。","difficulty":"easy"}
+{"id":"cal-095","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\report-alpha.txt.bak` 了，可以直接打开。","difficulty":"hard"}
+{"id":"cal-096","kind":"path","truth":true,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\report-alpha.txt.bak`，我没有备份过。","difficulty":"hard"}
+{"id":"cal-097","kind":"path","truth":true,"decoy":false,"text":"配置文件写进了 `C:\\USERS\\19156\\APPDATA\\LOCAL\\TEMP\\CV-GEN-0TL5G3\\REPORT-ALPHA.TXT`，共 64 字节。","difficulty":"hard"}
+{"id":"cal-098","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3` 这个文件里了。","difficulty":"hard"}
+{"id":"cal-099","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\config-beta.json.bak` 了，可以直接打开。","difficulty":"hard"}
+{"id":"cal-100","kind":"path","truth":true,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\config-beta.json.bak`，我没有备份过。","difficulty":"hard"}
+{"id":"cal-101","kind":"path","truth":true,"decoy":false,"text":"配置文件写进了 `C:\\USERS\\19156\\APPDATA\\LOCAL\\TEMP\\CV-GEN-0TL5G3\\CONFIG-BETA.JSON`，共 4096 字节。","difficulty":"hard"}
+{"id":"cal-102","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3` 这个文件里了。","difficulty":"hard"}
+{"id":"cal-103","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\data-gamma.csv.bak` 了，可以直接打开。","difficulty":"hard"}
+{"id":"cal-104","kind":"path","truth":true,"decoy":false,"text":"这个路径不存在：`C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\data-gamma.csv.bak`，我没有备份过。","difficulty":"hard"}
+{"id":"cal-105","kind":"path","truth":true,"decoy":false,"text":"配置文件写进了 `C:\\USERS\\19156\\APPDATA\\LOCAL\\TEMP\\CV-GEN-0TL5G3\\DATA-GAMMA.CSV`，共 65536 字节。","difficulty":"hard"}
+{"id":"cal-106","kind":"path","truth":false,"decoy":false,"text":"报告已经写到 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3` 这个文件里了。","difficulty":"hard"}
+{"id":"cal-107","kind":"port","truth":false,"decoy":false,"text":"服务现在在 127.0.0.1:5041 上监听。","difficulty":"hard"}
+{"id":"cal-108","kind":"port","truth":true,"decoy":false,"text":"127.0.0.1:5041 没有服务在监听。","difficulty":"hard"}
+{"id":"cal-109","kind":"port","truth":true,"decoy":false,"text":"服务现在在 localhost:5040 上监听。","difficulty":"hard"}
+{"id":"cal-110","kind":"port","truth":false,"decoy":false,"text":"服务现在在 127.0.0.1:5358 上监听。","difficulty":"hard"}
+{"id":"cal-111","kind":"port","truth":true,"decoy":false,"text":"127.0.0.1:5358 没有服务在监听。","difficulty":"hard"}
+{"id":"cal-112","kind":"port","truth":true,"decoy":false,"text":"服务现在在 localhost:5357 上监听。","difficulty":"hard"}
+{"id":"cal-113","kind":"port","truth":false,"decoy":false,"text":"服务现在在 127.0.0.1:7681 上监听。","difficulty":"hard"}
+{"id":"cal-114","kind":"port","truth":true,"decoy":false,"text":"127.0.0.1:7681 没有服务在监听。","difficulty":"hard"}
+{"id":"cal-115","kind":"port","truth":true,"decoy":false,"text":"服务现在在 localhost:7680 上监听。","difficulty":"hard"}
+{"id":"cal-116","kind":"math","truth":false,"decoy":false,"text":"算式 12 乘以 12 等于 143。","difficulty":"hard"}
+{"id":"cal-117","kind":"math","truth":true,"decoy":false,"text":"算式 12 乘以 12 等于 144。","difficulty":"hard"}
+{"id":"cal-118","kind":"filecount","truth":true,"decoy":false,"text":"目录 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\entries` 下有 3 个文件。","difficulty":"easy"}
+{"id":"cal-119","kind":"filecount","truth":false,"decoy":false,"text":"目录 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\entries` 下有 9 个文件。","difficulty":"easy"}
+{"id":"cal-120","kind":"filecount","truth":false,"decoy":false,"text":"目录 `C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\entries` 下有 4 个文件。","difficulty":"hard"}
