@@ -1,0 +1,20 @@
+[
+  {
+    "name": "write",
+    "callId": "w-1",
+    "turn": 3,
+    "args": { "file_path": "C:\\Users\\user\\Desktop\\demo\\out.txt", "content": "hello" },
+    "isError": false,
+    "resultSeen": true,
+    "text": "created 12 bytes"
+  },
+  {
+    "name": "pwsh",
+    "callId": "c-1",
+    "turn": 3,
+    "args": { "command": "npm test" },
+    "isError": true,
+    "resultSeen": true,
+    "text": "FAIL 2 tests failed"
+  }
+]
