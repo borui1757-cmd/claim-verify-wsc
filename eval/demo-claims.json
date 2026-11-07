@@ -1,0 +1,5 @@
+[
+  { "kind": "write", "target": "C:\\Users\\user\\Desktop\\demo\\out.txt" },
+  { "kind": "cmd", "target": "npm test" },
+  { "kind": "write", "target": "C:\\Users\\user\\Desktop\\demo\\never-written.txt" }
+]
