@@ -1,0 +1,1 @@
+envelope demo: written after restart to exercise Ed25519 receipt.
