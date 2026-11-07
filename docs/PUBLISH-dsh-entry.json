@@ -1,0 +1,15 @@
+{
+  "name": "claim-verify-wsc",
+  "owner": "borui1757-cmd",
+  "url": "https://github.com/borui1757-cmd/claim-verify-wsc",
+  "page": "https://awesome-dsh-plugin.com/p/borui1757-cmd/claim-verify-wsc/",
+  "category": "verification",
+  "zh": "把 agent 的完成声明拿去对本机真值核验：端口/路径/进程/git/时钟/算式/引文共 19 个只读原语，三分类判定（supported/contradicted/insufficient），弃权优先。零模型调用、不联网、不写业务文件。含写后即刻核验、部署与重启判据、回执与认账修订、覆盖率三把尺子（声明/任务/完备性下界）。装完重启宿主才生效。",
+  "en": "Verify an agent's completion claims against real local ground truth: 19 read-only primitives (ports, paths, processes, git, clock, math, citations), three-way verdicts with explicit abstention. No model calls, no network, no writes. Includes post-write inline checks, deploy/reload verdicts, receipts and acknowledgment revisions, and three coverage metrics.",
+  "npm": "",
+  "version": "0.10.0",
+  "stars": 0,
+  "downloads": 0,
+  "install": "dsh plugin --profile web add github:borui1757-cmd/claim-verify-wsc",
+  "added": "2026-11-07"
+}
