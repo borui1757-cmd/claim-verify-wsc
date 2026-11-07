@@ -1,0 +1,34 @@
+{
+  "tmp": "C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3",
+  "files": [
+    {
+      "path": "C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\report-alpha.txt",
+      "size": 64
+    },
+    {
+      "path": "C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\config-beta.json",
+      "size": 4096
+    },
+    {
+      "path": "C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\data-gamma.csv",
+      "size": 65536
+    },
+    {
+      "path": "C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\entries\\one.txt",
+      "size": 1
+    },
+    {
+      "path": "C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\entries\\two.txt",
+      "size": 1
+    },
+    {
+      "path": "C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\entries\\three.txt",
+      "size": 1
+    }
+  ],
+  "ghosts": [
+    "C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\delta-missing.md",
+    "C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\epsilon-never.json",
+    "C:\\Users\\19156\\AppData\\Local\\Temp\\cv-gen-0tl5G3\\zeta-absent.log"
+  ]
+}
