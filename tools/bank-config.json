@@ -1,0 +1,7 @@
+{
+  "dailyBudgetCny": 20,
+  "alertAt": 0.8,
+  "bigCallCny": 0.4,
+  "coldStartInput": 100000,
+  "coldStartRatio": 0.1
+}
