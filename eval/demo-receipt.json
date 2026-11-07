@@ -1,0 +1,58 @@
+{
+  "v": 1,
+  "iss": "claim-verify-wsc",
+  "at": "2026-11-05T10:47:20.809Z",
+  "sessionId": "cli",
+  "prevDigest": null,
+  "summary": {
+    "total": 3,
+    "supported": 1,
+    "contradicted": 1,
+    "insufficient": 1
+  },
+  "claims": [
+    {
+      "claim": {
+        "kind": "write",
+        "target": "C:\\Users\\user\\Desktop\\demo\\out.txt"
+      },
+      "verdict": "supported",
+      "evidence": {
+        "tool": "write",
+        "callId": "w-1",
+        "turn": 3,
+        "isError": false,
+        "resultSeen": true,
+        "resultDigest": "69d84805316434ef"
+      },
+      "reason": "调用成功"
+    },
+    {
+      "claim": {
+        "kind": "cmd",
+        "target": "npm test"
+      },
+      "verdict": "contradicted",
+      "evidence": {
+        "tool": "pwsh",
+        "callId": "c-1",
+        "turn": 3,
+        "isError": true,
+        "resultSeen": true,
+        "resultDigest": "613f3ebee2138b08"
+      },
+      "reason": "该调用报错"
+    },
+    {
+      "claim": {
+        "kind": "write",
+        "target": "C:\\Users\\user\\Desktop\\demo\\never-written.txt"
+      },
+      "verdict": "insufficient",
+      "evidence": null,
+      "reason": "轨迹里没有对应调用（无证据，不判否定）"
+    }
+  ],
+  "digest": "c97eba54f706272d2945c0a7ca33b7c17a30cf50d59169d011b98f24d595c6df",
+  "sig": "95d430d587c8776d1f13de5a0eec944adc4659291cad9ba1ae17ae801746d590"
+}
