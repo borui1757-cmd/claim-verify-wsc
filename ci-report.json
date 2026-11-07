@@ -1,0 +1,652 @@
+{
+  "at": "2026-11-07T03:07:40.740Z",
+  "version": "0.10.0",
+  "total": 107,
+  "passed": 107,
+  "failed": 0,
+  "knownFailures": [],
+  "results": [
+    {
+      "label": "test/actuator.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "11/11 通过"
+    },
+    {
+      "label": "test/adapter.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "19/19 通过"
+    },
+    {
+      "label": "test/aivs.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "11/11 通过"
+    },
+    {
+      "label": "test/atomic-snapshot.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "17/17 通过"
+    },
+    {
+      "label": "test/atomic.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "14/14 通过"
+    },
+    {
+      "label": "test/attest.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "19/19 通过"
+    },
+    {
+      "label": "test/autolabel.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "14/14 通过"
+    },
+    {
+      "label": "test/breaker.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "11/11 通过"
+    },
+    {
+      "label": "test/build-id.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "6/6 通过"
+    },
+    {
+      "label": "test/calibration.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "13/13 通过"
+    },
+    {
+      "label": "test/capability.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "12/12 通过"
+    },
+    {
+      "label": "test/cascade.generated.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "12/12 通过"
+    },
+    {
+      "label": "test/cascade.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "5/5 通过"
+    },
+    {
+      "label": "test/cases.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "8/8 通过"
+    },
+    {
+      "label": "test/citation.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "15/15 通过"
+    },
+    {
+      "label": "test/claim-dsl.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "26/26 通过"
+    },
+    {
+      "label": "test/claim-reader.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "16/16 通过"
+    },
+    {
+      "label": "test/coherence-chunk-alert.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "18/18 通过"
+    },
+    {
+      "label": "test/commit-tool.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "10/10 通过"
+    },
+    {
+      "label": "test/commitments.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "10/10 通过"
+    },
+    {
+      "label": "test/completeness.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "13/13 通过"
+    },
+    {
+      "label": "test/confession.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "confession.mjs OK（4 组断言全过）"
+    },
+    {
+      "label": "test/consistency.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "12/12 通过"
+    },
+    {
+      "label": "test/consolidate.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "15/15 通过"
+    },
+    {
+      "label": "test/coverage.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "8/8 通过"
+    },
+    {
+      "label": "test/dry.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "16/16 通过"
+    },
+    {
+      "label": "test/dsl-policy.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "15/15 通过"
+    },
+    {
+      "label": "test/dsl-write.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "14/14 通过"
+    },
+    {
+      "label": "test/dsl.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "24/24 通过"
+    },
+    {
+      "label": "test/envelope.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "12/12 通过"
+    },
+    {
+      "label": "test/exit-attr.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "8/8 通过"
+    },
+    {
+      "label": "test/exit-marker.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "5/5 通过"
+    },
+    {
+      "label": "test/feedback-wire.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "21/21 通过"
+    },
+    {
+      "label": "test/feedback.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "11/11 通过"
+    },
+    {
+      "label": "test/fix.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "12/12 通过"
+    },
+    {
+      "label": "test/fp-extract.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "17/17 通过"
+    },
+    {
+      "label": "test/freshness.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "15/15 通过"
+    },
+    {
+      "label": "test/guards.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "16/16 通过"
+    },
+    {
+      "label": "test/hint.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "15/15 通过"
+    },
+    {
+      "label": "test/hook.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "  输出尾部：\"配置文件在 C:\\\\Users\\\\user\\\\Desktop\\\\__no_such_file__.md 里。\""
+    },
+    {
+      "label": "test/hormone.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "15/15 通过"
+    },
+    {
+      "label": "test/independence.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "27/27 通过"
+    },
+    {
+      "label": "test/inject-clock.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "8/8 通过"
+    },
+    {
+      "label": "test/inline-temporal.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "4/4 通过"
+    },
+    {
+      "label": "test/inline.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "37/37 通过"
+    },
+    {
+      "label": "test/isolated-audit.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "15/15 通过"
+    },
+    {
+      "label": "test/knight-layers.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "15/15 通过"
+    },
+    {
+      "label": "test/knight.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "12/12 通过"
+    },
+    {
+      "label": "test/llm-transport.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "8/8 通过"
+    },
+    {
+      "label": "test/manifest-coverage.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "17/17 通过"
+    },
+    {
+      "label": "test/manifest.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "16/16 通过"
+    },
+    {
+      "label": "test/mcp.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "15/15 通过"
+    },
+    {
+      "label": "test/memory-mem0.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "20/20 通过"
+    },
+    {
+      "label": "test/memory.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "14/14 通过"
+    },
+    {
+      "label": "test/meta.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "12/12 通过"
+    },
+    {
+      "label": "test/metamorphic.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "9/9 通过"
+    },
+    {
+      "label": "test/mirror-box.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "14/14 通过"
+    },
+    {
+      "label": "test/mutation.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "7/7 通过"
+    },
+    {
+      "label": "test/numerals.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "25/25 通过"
+    },
+    {
+      "label": "test/offline-claims.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "10/10 通过"
+    },
+    {
+      "label": "test/outcomes.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "10/10 通过"
+    },
+    {
+      "label": "test/paths.generated.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "12/12 通过"
+    },
+    {
+      "label": "test/platform.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "20/20 通过"
+    },
+    {
+      "label": "test/poisoned-history.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "PASS  15/15"
+    },
+    {
+      "label": "test/policy-build.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "[claim-verify] dslPolicy 配置有误，退回全放行：default 必须是 allow/deny/pending，收到 \"bogus\""
+    },
+    {
+      "label": "test/policy-predicate.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "15/15 通过"
+    },
+    {
+      "label": "test/policy.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "8/8 通过"
+    },
+    {
+      "label": "test/preflight.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "9/9 通过"
+    },
+    {
+      "label": "test/priority.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "10/10 通过"
+    },
+    {
+      "label": "test/probe-tool.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "12/12 通过"
+    },
+    {
+      "label": "test/promise.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "22/22 通过"
+    },
+    {
+      "label": "test/property.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "5/5 通过"
+    },
+    {
+      "label": "test/receipt-hook.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "9/9 通过"
+    },
+    {
+      "label": "test/receipt.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "18/18 通过"
+    },
+    {
+      "label": "test/receipts-view.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "12/12 通过"
+    },
+    {
+      "label": "test/recorder.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "11/11 通过"
+    },
+    {
+      "label": "test/redflag.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "6/6 通过"
+    },
+    {
+      "label": "test/replay.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "按类统计： {\"pid\":10,\"path\":54,\"port\":718,\"date\":6,\"time\":27,\"size\":7,\"service\":3,\"math\":17,\"money\":1,\"pkgversion\":1,\"model\":7}"
+    },
+    {
+      "label": "test/report-tool.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "9/9 通过"
+    },
+    {
+      "label": "test/resolve.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "PASS  claim-verify-wsc v0.10.0 apply=function Config=function"
+    },
+    {
+      "label": "test/revision-advice.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "12/12 通过"
+    },
+    {
+      "label": "test/revision.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "26/26 通过"
+    },
+    {
+      "label": "test/rfc3161.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "13/13 通过"
+    },
+    {
+      "label": "test/rubric-tool.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "15/15 通过"
+    },
+    {
+      "label": "test/rubric.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "27/27 通过"
+    },
+    {
+      "label": "test/rulestore.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "10/10 通过"
+    },
+    {
+      "label": "test/sentence-audit.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "23/23 通过"
+    },
+    {
+      "label": "test/service-cache.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "5/5 通过"
+    },
+    {
+      "label": "test/spec-proc.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "22/22 通过"
+    },
+    {
+      "label": "test/structural-audit.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "5/5 通过"
+    },
+    {
+      "label": "test/task-delta.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "13/13 通过"
+    },
+    {
+      "label": "test/temporal.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "9/9 通过"
+    },
+    {
+      "label": "test/tier.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "17/17 通过"
+    },
+    {
+      "label": "test/time-claim.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "25/25 通过"
+    },
+    {
+      "label": "test/timeline-box.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "17/17 通过"
+    },
+    {
+      "label": "test/timeline-chunked.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "7/7 通过"
+    },
+    {
+      "label": "test/trace.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "17/17 通过"
+    },
+    {
+      "label": "test/vagueness.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "20/20 通过"
+    },
+    {
+      "label": "test/vcs-http.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "13/13 通过"
+    },
+    {
+      "label": "test/verified-write.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "18/18 通过"
+    },
+    {
+      "label": "test/vote.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "10/10 通过"
+    },
+    {
+      "label": "test/witness.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "10/10 通过"
+    },
+    {
+      "label": "test/worldmodel.mjs",
+      "ok": true,
+      "code": 0,
+      "lastLine": "13/13 通过"
+    },
+    {
+      "label": "doctor（环境体检）",
+      "ok": true,
+      "code": 0,
+      "lastLine": "结论：可以完整运行（文件/端口/计算核验 + 工具注册）。"
+    },
+    {
+      "label": "liar-bench（骑士基准）",
+      "ok": true,
+      "code": 0,
+      "lastLine": "  门槛：召回 ≥ 90%、误报 ≤ 10%、越权声称 3/3、资金分档 3/3 → ✅ 通过"
+    },
+    {
+      "label": "corpus-eval（讨论型语料）",
+      "ok": true,
+      "code": 0,
+      "lastLine": "明细（只看有取值的）："
+    },
+    {
+      "label": "corpus-task-eval（任务型语料）",
+      "ok": true,
+      "code": 0,
+      "lastLine": "覆盖率 = 2/2 = 100.0%"
+    }
+  ]
+}
