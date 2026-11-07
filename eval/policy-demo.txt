@@ -1,0 +1,1 @@
+policy-bound receipt demo (written after policy gate landed).
